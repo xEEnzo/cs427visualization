@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void OpenButton(View view)
     {
-        OpenButton = (Button) findViewById(R.id.button2);
+        OpenButton = (Button) findViewById(R.id.open);
         Intent intent = new Intent(this,OpenExistingActivity.class);
 
   //      int id = view.getId();

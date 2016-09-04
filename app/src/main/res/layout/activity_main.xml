@@ -28,20 +28,20 @@
         android:text="Create new project"
 
         android:onClick="CreateButton"
-        android:id="@+id/button"
+        android:id="@+id/create"
         android:layout_marginTop="45dp"
         android:layout_below="@+id/title"
-        android:layout_alignRight="@+id/button2"
-        android:layout_alignEnd="@+id/button2"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignStart="@+id/button2"
+        android:layout_alignRight="@+id/open"
+        android:layout_alignEnd="@+id/open"
+        android:layout_alignLeft="@+id/open"
+        android:layout_alignStart="@+id/open"
         android:textColor="#0091ff"
         android:background="@drawable/border_button"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button2"
+        android:id="@+id/open"
         android:onClick="OpenButton"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
