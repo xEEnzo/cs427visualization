@@ -1,9 +1,11 @@
-package com.example.triquach.finalproj;
+package com.visualization.cs427.visualization.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.example.triquach.finalproj.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

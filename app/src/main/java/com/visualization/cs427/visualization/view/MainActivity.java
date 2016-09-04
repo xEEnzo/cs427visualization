@@ -1,4 +1,4 @@
-package com.example.triquach.finalproj;
+package com.visualization.cs427.visualization.view;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.triquach.finalproj.R;
 
 public class MainActivity extends AppCompatActivity {
     Button CreateButton;
