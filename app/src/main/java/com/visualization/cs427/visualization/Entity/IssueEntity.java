@@ -5,9 +5,9 @@ package com.visualization.cs427.visualization.Entity;
  */
 public class IssueEntity extends Entity {
 
-    public static int TYPE_STORY = 1;
-    public static int TYPE_TASK = 2;
-    public static int TYPE_BUG = 3;
+    public static final int TYPE_STORY = 1;
+    public static final int TYPE_TASK = 2;
+    public static final int TYPE_BUG = 3;
     public static int STATUS_CODING = 1;
     public static int STATUS_REVIEWING = 2;
     public static int STATUS_TESTING = 3;
@@ -22,6 +22,16 @@ public class IssueEntity extends Entity {
     private String description;
     private int processStatus;
     private int locationStatus;
+
+    public IssueEntity(String id, String name, int type, String summary, int point, String description, int processStatus, int locationStatus) {
+        super(id, name);
+        this.type = type;
+        this.summary = summary;
+        this.point = point;
+        this.description = description;
+        this.processStatus = processStatus;
+        this.locationStatus = locationStatus;
+    }
 
     public int getType() {
         return type;

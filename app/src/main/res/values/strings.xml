@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FinalProj</string>
+    <string name="layout_type">LAYOUT_TYPE</string>
+    <string name="issue_id">issue_id</string>
 </resources>

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.visualization.cs427.visualization.SprintDetailActivity">
+    tools:context=".view.SprintDetailActivity">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,50 +29,57 @@
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Sprint 1"
-        android:id="@+id/txtSprint"
-        android:textSize="@dimen/text_size_normal"
-        android:padding="10sp"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/layoutSprint"
-        android:layout_marginLeft="10sp"
-        android:layout_marginRight="10sp">
+        android:id="@+id/layoutAll">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/default_layout_sprint_size"
-            android:background="@color/light_grey"/>
+            android:layout_height="wrap_content"
+            tools:text="Sprint 1"
+            android:text="Sprint"
+            android:id="@+id/txtSprint"
+            android:textSize="@dimen/text_size_normal"
+            android:padding="10sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/layoutSprint"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/default_layout_sprint_size"
+                android:background="@color/light_grey"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Backlog"
+            android:textSize="@dimen/text_size_normal"
+            android:padding="10sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/layoutBacklog"
+            android:layout_marginLeft="10sp"
+            android:layout_marginRight="10sp">
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Issue"
+            android:id="@+id/txtCreateIssue"
+            android:textSize="@dimen/text_size_normal"
+            android:padding="10sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"/>
     </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Backlog"
-        android:textSize="@dimen/text_size_normal"
-        android:padding="10sp"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/layoutBacklog"
-        android:layout_marginLeft="10sp"
-        android:layout_marginRight="10sp">
-    </LinearLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create Issue"
-        android:id="@+id/txtCreateIssue"
-        android:textSize="@dimen/text_size_normal"
-        android:padding="10sp"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"/>
 </LinearLayout>

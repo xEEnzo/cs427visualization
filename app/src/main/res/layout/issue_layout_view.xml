@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:layout_marginLeft="10sp">
+    android:layout_marginLeft="10sp"
+    android:layout_marginRight="10sp"
+    android:padding="10sp"
+    android:background="@drawable/border_middle"
+    >
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -36,6 +40,7 @@
             tools:text="Epic Name"
             android:id="@+id/txtEpicName"
             android:background="@color/yellow"
+            android:visibility="invisible"
             />
         <TextView
             android:layout_width="wrap_content"

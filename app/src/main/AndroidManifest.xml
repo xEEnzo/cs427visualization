@@ -18,8 +18,7 @@
         <activity android:name="com.visualization.cs427.visualization.view.OpenExistingActivity"
             android:screenOrientation="sensorLandscape"
             android:configChanges="orientation|keyboardHidden"></activity>
-        </activity>
-        <activity android:name=".SprintDetailActivity"
+        <activity android:name=".view.SprintDetailActivity"
             android:screenOrientation="landscape">
         </activity>
     </application>
