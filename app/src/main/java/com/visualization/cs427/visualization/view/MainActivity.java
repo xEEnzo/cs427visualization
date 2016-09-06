@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.triquach.finalproj.R;
+import com.visualization.cs427.visualization.R;
+
 
 public class MainActivity extends AppCompatActivity {
     Button CreateButton;
