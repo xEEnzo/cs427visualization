@@ -34,26 +34,49 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/layoutAll">
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Sprint 1"
-            android:text="Sprint"
-            android:id="@+id/txtSprint"
-            android:textSize="@dimen/text_size_normal"
-            android:padding="10sp"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"/>
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Sprint 1"
+                android:text="Sprint"
+                android:id="@+id/txtSprint"
+                android:textSize="@dimen/text_size_normal"
+                android:padding="10sp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3sp"
+                android:visibility="invisible"
+                android:background="@drawable/grey_tag"
+                android:id="@+id/txtNumIssues"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="3sp"
+                android:visibility="invisible"
+                android:background="@drawable/grey_tag"
+                android:id="@+id/txtTotalPoints"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/layoutSprint"
             android:layout_marginLeft="10sp"
-            android:layout_marginRight="10sp">
+            android:layout_marginRight="10sp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:paddingTop="1dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/default_layout_sprint_size"
+                android:id="@+id/txtEmpty"
                 android:background="@color/light_grey"/>
         </LinearLayout>
         <TextView

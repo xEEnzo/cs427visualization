@@ -33,24 +33,29 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private List<View> viewListBacklog;
     private List<View> viewListSprint;
     private LayoutInflater inflater;
-    private int heightofElement;
+    private TextView txtEmpty, txtNumIssues;
     private View.OnDragListener onContainerDragListener;
     private ScrollView scrollView;
     private int screenHeight;
     private boolean onDragging = false;
     private int selectedIndex;
     private boolean isInBackLog;
-    private boolean emptyLayout = false;
-    private int oldX, oldY, diffPosX, diffPosY, posX, posY;
-    private View tmpView;
+    private boolean emptyLayoutInBackLog = false;
+    private boolean emptyLayoutInSprint = false;
+    private boolean isChangeBackToLog = false;
+    private View.OnLongClickListener sprintIssueLongCLick;
+    private boolean rightDrop = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprint_detail);
         setUpOnContainerDrag();
+        setUpSprintIssueLongClick();
         inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         txtSprint = (TextView) findViewById(R.id.txtSprint);
+        txtEmpty = (TextView) findViewById(R.id.txtEmpty);
+        txtNumIssues = (TextView) findViewById(R.id.txtNumIssues);
         txtCreateissue = (TextView) findViewById(R.id.txtCreateIssue);
         txtCreateissue.setOnClickListener(this);
         layoutAll = (LinearLayout) findViewById(R.id.layoutAll);
@@ -80,6 +85,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                         autoScroll(view, dragEvent);
                         break;
                     case DragEvent.ACTION_DROP:
+                        rightDrop = true;
                         dragDrop(view, dragEvent);
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
@@ -93,9 +99,23 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         };
     }
 
+    private void setUpSprintIssueLongClick(){
+        sprintIssueLongCLick = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                selectedIndex = (int) view.getTag(R.string.issue_position);
+                isInBackLog = false;
+                return true;
+            }
+        };
+    }
+
     private void changeContainer(int id) {
         if (isInBackLog && id == R.id.layoutSprint) {
-            Log.d("nhatlinh95", "move to Sprint");
             selectedIndex = layoutSprint.getChildCount();
             isInBackLog = false;
             return;
@@ -103,6 +123,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         if (!isInBackLog && id == R.id.layoutBacklog) {
             selectedIndex = 0;
             isInBackLog = true;
+            isChangeBackToLog = true;
             return;
         }
     }
@@ -198,6 +219,8 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                 onDragging = true;
                 break;
             case DragEvent.ACTION_DRAG_ENTERED:
+                View dragging = (View) event.getLocalState();
+                int fromLocation = (int) dragging.getTag(R.string.issue_location);
                 LinearLayout layout = null;
                 List<View> viewList = null;
                 if (isInBackLog) {
@@ -208,13 +231,16 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                     viewList = viewListSprint;
                 }
                 if (selectedIndex >= viewList.size()){
-                    LinearLayout layoutTmp = new LinearLayout(SprintDetailActivity.this);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, v.getHeight());
-                    layoutTmp.setLayoutParams(params);
-                    layout.addView(layoutTmp);
-                    layoutTmp.setVisibility(View.INVISIBLE);
-                    viewList.add(layoutTmp);
-                    emptyLayout = true;
+                    changeFromBackLogToSprint(layout, viewList, v);
+                }
+                if (fromLocation == IssueEntity.LOCATION_SPRINT && selectedIndex == 0 && isChangeBackToLog){
+                    changeFromSprintToBackLog(layout, viewList, v);
+                    for (View view:viewList){
+                        deleteParent(view);
+                        layout.addView(view);
+                    }
+                    isChangeBackToLog = false;
+                    return true;
                 }
                 viewList.get(selectedIndex).setTag(R.string.issue_position, position);
                 viewList.get(position).setTag(R.string.issue_position, selectedIndex);
@@ -232,7 +258,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                 autoScroll(v, event);
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
+                checkDropIntoEmptySpace(v);
                 onDragging = false;
+                rightDrop = false;
                 break;
             default:
                 break;
@@ -240,70 +268,177 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         return true;
     }
 
+    private void checkDropIntoEmptySpace(View dropped){
+        if (rightDrop){
+            return;
+        }
+        layoutSprint.removeAllViews();
+        for (View v : viewListSprint){
+            if (v.getVisibility() == View.INVISIBLE){
+                v.setVisibility(View.VISIBLE);
+            }
+            layoutSprint.addView(v);
+        }
+        layoutBacklog.removeAllViews();
+        for (View v : viewListBacklog){
+            if (v.getVisibility() == View.INVISIBLE){
+                v.setVisibility(View.VISIBLE);
+            }
+            layoutBacklog.addView(v);
+        }
+        setUpWhenContainerEmpty(layoutSprint);
+        setUpWhenContainerEmpty(layoutBacklog);
+    }
+
+    private void changeFromSprintToBackLog(LinearLayout layout, List<View> viewList, View v) {
+        LinearLayout layoutTmp = new LinearLayout(SprintDetailActivity.this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(v.getLayoutParams().width, v.getHeight());
+        layoutTmp.setLayoutParams(params);
+        layout.addView(layoutTmp, 0);
+        layoutTmp.setVisibility(View.INVISIBLE);
+        layoutTmp.setTag(R.string.issue_position, 0);
+        viewList.add(0, layoutTmp);
+        emptyLayoutInBackLog = true;
+        for (int i=1; i<viewList.size(); ++i){
+            View view = viewList.get(i);
+            int oldPos = (int) view.getTag(R.string.issue_position);
+            view.setTag(R.string.issue_position, oldPos+1);
+        }
+    }
+
     private void deleteParent (View v){
+        if (v == null){
+            return;
+        }
         if (v.getParent() != null){
             ((ViewGroup)v.getParent()).removeView(v);
         }
     }
 
+    private void changeFromBackLogToSprint(LinearLayout layout, List<View> viewList, View v){
+        LinearLayout layoutTmp = new LinearLayout(SprintDetailActivity.this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(v.getLayoutParams().width, v.getHeight());
+        layoutTmp.setLayoutParams(params);
+        layout.addView(layoutTmp);
+        layoutTmp.setVisibility(View.INVISIBLE);
+        viewList.add(layoutTmp);
+        emptyLayoutInSprint = true;
+    }
+
     private void dragDrop(View v, DragEvent event) {
         View dropped = (View) event.getLocalState();
         int issueLocation = (int) dropped.getTag(R.string.issue_location);
+        int oldPosofDropped = (int) dropped.getTag(R.string.issue_position);
         String id = (String) dropped.getTag();
         // update database
-        if (dropped.getVisibility() == View.INVISIBLE){
+         if (dropped.getVisibility() == View.INVISIBLE){
             dropped.setVisibility(View.VISIBLE);
         }
         deleteParent(dropped);
-        if (isInBackLog){
+         if (isInBackLog){
             dropped.setTag(R.string.issue_location, IssueEntity.LOCATION_BACKLOG);
-            if (emptyLayout){
+            if (emptyLayoutInBackLog){
                 layoutBacklog.removeViewAt(selectedIndex);
                 viewListBacklog.remove(selectedIndex);
-                emptyLayout = false;
+                emptyLayoutInBackLog = false;
+            }
+            if (emptyLayoutInSprint){
+                layoutSprint.removeViewAt(layoutSprint.getChildCount()-1);
+                viewListSprint.remove(viewListSprint.size()-1);
+                emptyLayoutInSprint = false;
             }
             addViewToContainer(dropped, layoutBacklog);
             if (issueLocation != IssueEntity.LOCATION_BACKLOG){
+                viewListSprint.remove(dropped);
+                layoutSprint.removeView(dropped);
                 addViewToList(viewListBacklog, dropped);
+                for (int i = oldPosofDropped+1; i<viewListSprint.size(); ++i){
+                    View view = viewListSprint.get(i);
+                    int oldPos = (int) view.getTag(R.string.issue_position);
+                    view.setTag(R.string.issue_position, oldPos-1);
+                }
             }
+             setUpWhenContainerEmpty(layoutSprint);
         }
         else {
             dropped.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
+            dropped.setOnLongClickListener(sprintIssueLongCLick);
             if (layoutSprint.getChildCount()==1){
                 layoutSprint.removeAllViews();
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(layoutSprint.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
-                layoutSprint.setLayoutParams(params);
+                layoutSprint.setBackgroundResource(R.drawable.border);
             }
-            if (emptyLayout){
+            if (emptyLayoutInSprint){
                 layoutSprint.removeViewAt(selectedIndex);
                 viewListSprint.remove(selectedIndex);
-                emptyLayout = false;
+                emptyLayoutInSprint = false;
+            }
+            if (emptyLayoutInBackLog){
+                layoutBacklog.removeViewAt(0);
+                viewListSprint.remove(0);
+                for (View view :viewListSprint){
+                    int oldPos = (int) view.getTag(R.string.issue_position);
+                    view.setTag(R.string.issue_position, oldPos-1);
+                }
+                emptyLayoutInBackLog = false;
             }
             addViewToContainer(dropped, layoutSprint);
             if (issueLocation != IssueEntity.LOCATION_SPRINT){
+                viewListBacklog.remove(dropped);
+                layoutBacklog.removeView(dropped);
                 addViewToList(viewListSprint, dropped);
+                for (View view : viewListBacklog){
+                    int oldPos = (int) view.getTag(R.string.issue_position);
+                    view.setTag(R.string.issue_position, oldPos-1);
+                }
             }
+             setUpWhenContainerEmpty(layoutSprint);
         }
         onDragging = false;
 
     }
-
+    private void setUpWhenContainerEmpty(LinearLayout container){
+        if (container.getChildCount() != 0){
+            return;
+        }
+        deleteParent(txtEmpty);
+        container.setBackground(null);
+        container.addView(txtEmpty);
+    }
     private void addViewToContainer(View dropped, LinearLayout container){
         if (selectedIndex >= container.getChildCount()){
+            dropped.setTag(R.string.issue_position, container.getChildCount());
             container.addView(dropped);
         }
         else {
+            dropped.setTag(R.string.issue_position, selectedIndex);
             container.addView(dropped, selectedIndex);
         }
     }
 
     private void addViewToList (List<View> viewList, View dropped){
         if (viewList.size() < selectedIndex){
+            dropped.setTag(R.string.issue_position, viewList.size());
             viewList.add(dropped);
         }
         else {
+            dropped.setTag(R.string.issue_position, selectedIndex);
             viewList.add(selectedIndex, dropped);
         }
+        setNumIssues(viewList);
+    }
+
+    private void setNumIssues(List<View> viewLists){
+        int size = viewLists.size();
+        if (size == 0){
+            txtNumIssues.setVisibility(View.INVISIBLE);
+            return;
+        }
+        txtNumIssues.setVisibility(View.VISIBLE);
+        if (size == 1){
+            txtNumIssues.setText(size + " issue");
+            return;
+        }
+        txtNumIssues.setText(size + " issues");
     }
 
     @Override
