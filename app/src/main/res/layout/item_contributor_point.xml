@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200sp"
+    android:layout_height="100sp"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:layout_margin="5sp"
+    android:id="@+id/layoutContributorPoint"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tvContributorName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:text="Contributor"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tvContributorPoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="88"/>
+
+</LinearLayout>
