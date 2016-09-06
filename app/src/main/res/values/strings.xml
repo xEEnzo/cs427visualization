@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FinalProj</string>
+    <string name="backlog"><![CDATA[< Backlog]]></string>
 </resources>

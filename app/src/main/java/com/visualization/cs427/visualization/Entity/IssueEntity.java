@@ -23,6 +23,15 @@ public class IssueEntity extends Entity {
     private int processStatus;
     private int locationStatus;
 
+    public IssueEntity(String id, String name) {
+        super(id, name);
+    }
+
+    public IssueEntity(String id, String name, int point) {
+        super(id, name);
+        this.point = point;
+    }
+
     public int getType() {
         return type;
     }
@@ -70,4 +79,6 @@ public class IssueEntity extends Entity {
     public void setLocationStatus(int locationStatus) {
         this.locationStatus = locationStatus;
     }
+
+
 }

@@ -22,8 +22,7 @@
         <activity
             android:name=".view.ActiveSprintActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

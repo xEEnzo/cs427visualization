@@ -9,6 +9,10 @@ public class ProjectEntity extends Entity {
 
     private ArrayList<IssueEntity> issueEntities;
 
+    public ProjectEntity(String id, String name) {
+        super(id, name);
+    }
+
     public ArrayList<IssueEntity> getIssueEntities() {
         return issueEntities;
     }

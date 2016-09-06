@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.triquach.finalproj.R;
+import com.visualization.cs427.visualization.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -7,6 +7,10 @@ public class EpicEntity extends Entity {
 
     private int colorResID;
 
+    public EpicEntity(String id, String name) {
+        super(id, name);
+    }
+
     public int getColorResID() {
         return colorResID;
     }

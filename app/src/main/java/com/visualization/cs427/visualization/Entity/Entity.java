@@ -23,4 +23,9 @@ public class Entity {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Entity(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

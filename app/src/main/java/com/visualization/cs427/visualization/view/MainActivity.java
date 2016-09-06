@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.triquach.finalproj.R;
+import com.visualization.cs427.visualization.R;
 
 public class MainActivity extends AppCompatActivity {
     Button CreateButton;
@@ -15,17 +15,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void CreateButton(View view)
     {
-      //  CreateButton = (Button) findViewById(R.id.button);
-     //   CreateButton.setTextColor(0xFFFFFF);
-      //  CreateButton.setBackgroundColor(0x0091ff);
+        CreateButton = (Button) findViewById(R.id.create);
+        Intent intent = new Intent(this, ActiveSprintActivity.class);
+        startActivity(intent);
     }
     public void OpenButton(View view)
     {
         OpenButton = (Button) findViewById(R.id.open);
-        Intent intent = new Intent(this,OpenExistingActivity.class);
-
-  //      int id = view.getId();
-    //    intent.putExtra("book_id",id);
+        Intent intent = new Intent(this, OpenExistingActivity.class);
         startActivity(intent);
     }
 

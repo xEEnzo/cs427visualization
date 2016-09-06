@@ -5,4 +5,7 @@ package com.visualization.cs427.visualization.Entity;
  */
 public class ContributorEntity extends Entity {
 
+    public ContributorEntity(String id, String name) {
+        super(id, name);
+    }
 }
