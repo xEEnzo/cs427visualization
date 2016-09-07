@@ -32,6 +32,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
     private List<LinearLayout> layoutIssues;
     private static final int ISSUE_INDEX_START = 100;
     private static final int LINE_INDEX_START = 200;
+    private static final int ISSUE_LINE_INDEX = 10000;
     private boolean moveToLine = false;
     private int from, to;
     private final static String ISSUE_TO_DO = "to_do";
@@ -66,23 +67,16 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             layoutContributorLine.addView(conLayout);
             conLayout.setTag(LINE_INDEX_START + i);
             conLayout.setOnDragListener(this);
+            // add issue of the contributor to conLayout
+            // ...
             layoutIssueLines.add(conLayout);
         }
     }
 
     private void setUpLayoutIssue() {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, ViewGroup.LayoutParams.MATCH_PARENT);
         for (int i = 0; i < issueEntities.size(); ++i) {
             IssueEntity entity = issueEntities.get(i);
-            LinearLayout conLayout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.item_issue, null);
-            TextView tvName = (TextView) conLayout.findViewById(R.id.tvIssueName);
-            tvName.setText(entity.getName());
-            conLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue));
-            layoutIssue.addView(conLayout, params);
-            layoutIssues.add(conLayout);
-            conLayout.setTag(ISSUE_INDEX_START + i);
-            conLayout.setOnLongClickListener(this);
-            conLayout.setOnDragListener(this);
+            layoutIssues.add(createIssueLayout(entity, ISSUE_INDEX_START + i));
         }
     }
 
@@ -155,25 +149,19 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
                 break;
             }
         }
-        LinearLayout layoutLine = layoutIssueLines.get(toIndex);
+        LinearLayout layoutContributorLine = layoutIssueLines.get(toIndex);
         LinearLayout layoutIssue = layoutIssues.get(fromIndex);
+        LinearLayout layoutIssueLine = (LinearLayout) layoutContributorLine.findViewById(R.id.layoutIssueLine);
         IssueEntity entity = issueEntities.get(fromIndex);
         // add to line
-        FrameLayout conLayout = (FrameLayout) activity.getLayoutInflater().inflate(R.layout.item_issue_line, null);
-        TextView tvName = (TextView) conLayout.findViewById(R.id.tvIssueName);
-        tvName.setText(entity.getName());
-        TextView tvEpic = (TextView) conLayout.findViewById(R.id.tvEpicName);
-        tvEpic.setText("Epic");
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200 + entity.getPoint() * 50, ViewGroup.LayoutParams.MATCH_PARENT);
-        conLayout.setLayoutParams(params);
-        layoutLine.addView(conLayout);
+        layoutIssueLine.addView(createIssueLineLayout(entity, lineHashMap.get(contributorEntities.get(toIndex)).size()));
         // remove issue
         LinearLayout parent = (LinearLayout) layoutIssue.getParent();
         parent.removeView(layoutIssue);
         lineHashMap.get(contributorEntities.get(toIndex)).add(entity);
         issueEntities.remove(entity);
+        layoutIssues.remove(layoutIssue);
     }
-
 
     private void moveBetweenIssue(View v, int from, int to) {
         if (from == to) {
@@ -211,5 +199,32 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         TextView tvName2 = (TextView) layoutTo.findViewById(R.id.tvIssueName);
         tvName2.setText(issueEntities.get(toIndex).getName());
         Toast.makeText(activity, "" + fromIndex + " to " + toIndex, Toast.LENGTH_SHORT).show();
+    }
+
+    private FrameLayout createIssueLineLayout(IssueEntity entity, int tag) {
+        FrameLayout conLayout = (FrameLayout) activity.getLayoutInflater().inflate(R.layout.item_issue_line, null);
+        TextView tvName = (TextView) conLayout.findViewById(R.id.tvIssueName);
+        tvName.setText(entity.getName());
+        TextView tvEpic = (TextView) conLayout.findViewById(R.id.tvEpicName);
+        tvEpic.setText("Epic");
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200 + entity.getPoint() * 50, ViewGroup.LayoutParams.MATCH_PARENT);
+        conLayout.setLayoutParams(params);
+        conLayout.setOnLongClickListener(this);
+        conLayout.setOnDragListener(this);
+        conLayout.setTag(tag);
+        return conLayout;
+    }
+
+    private LinearLayout createIssueLayout(IssueEntity entity, int tag) {
+        LinearLayout conLayout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.item_issue, null);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, ViewGroup.LayoutParams.MATCH_PARENT);
+        TextView tvName = (TextView) conLayout.findViewById(R.id.tvIssueName);
+        tvName.setText(entity.getName());
+        conLayout.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue));
+        layoutIssue.addView(conLayout, params);
+        conLayout.setTag(tag);
+        conLayout.setOnLongClickListener(this);
+        conLayout.setOnDragListener(this);
+        return conLayout;
     }
 }
