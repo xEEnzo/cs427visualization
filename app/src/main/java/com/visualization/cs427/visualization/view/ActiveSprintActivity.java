@@ -16,12 +16,16 @@ import com.visualization.cs427.visualization.Entity.ProjectEntity;
 import com.visualization.cs427.visualization.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ActiveSprintActivity extends AppCompatActivity {
 
     private List<ContributorEntity> contributorEntities;
     private ProjectEntity projectEntity;
+    private LinearLayout layoutIssue, layoutContributorPoint, layoutContributorLine;
+    private ActiveSprintInteractionController controller;
+    private HashMap<ContributorEntity, List<IssueEntity>> lineHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,43 +50,21 @@ public class ActiveSprintActivity extends AppCompatActivity {
         }
         projectEntity.setIssueEntities((ArrayList<IssueEntity>) issueEntities);
         // ----------------------
-        setUpLayoutContributorPoint();
-        setUpLayoutIssue();
-    }
-
-    private void setUpLayoutIssue() {
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layoutIssue);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, ViewGroup.LayoutParams.MATCH_PARENT);
-        for (IssueEntity entity : projectEntity.getIssueEntities()) {
-            LinearLayout conLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_issue, null);
-            TextView tvName = (TextView) conLayout.findViewById(R.id.tvIssueName);
-            tvName.setText(entity.getName());
-            conLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.blue));
-            layout.addView(conLayout, params);
+        for (int i = 0; i < 10; ++i) {
+            issueEntities.get(i).setPoint(i);
         }
-        /*
-        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(this);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (layout.getParent() == null){
-            horizontalScrollView.addView(layout, params1);
-            return;
-        }
-        ((ViewGroup)layout.getParent()).removeView(layout);
-        horizontalScrollView.addView(layout);
-        ((ViewGroup)layout.getParent()).addView(horizontalScrollView);*/
-    }
-
-    private void setUpLayoutContributorPoint() {
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layoutContributorPoint);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1);
+        // ----------------------
+        lineHashMap = new HashMap<>();
         for (ContributorEntity entity : contributorEntities) {
-            LinearLayout conLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_contributor_point, null);
-            TextView tvName = (TextView) conLayout.findViewById(R.id.tvContributorName);
-            tvName.setText(entity.getName());
-            TextView tvPoint = (TextView) conLayout.findViewById(R.id.tvContributorPoint);
-            tvPoint.setText("88");
-            conLayout.setLayoutParams(params);
-            layout.addView(conLayout);
+            lineHashMap.put(entity, new ArrayList<IssueEntity>());
         }
+        // ----------------------
+        layoutIssue = (LinearLayout) findViewById(R.id.layoutIssue);
+        layoutContributorPoint = (LinearLayout) findViewById(R.id.layoutContributorPoint);
+        layoutContributorLine = (LinearLayout) findViewById(R.id.layoutContributorLine);
+        controller = new ActiveSprintInteractionController(this, issueEntities, contributorEntities, lineHashMap,
+                layoutIssue, layoutContributorPoint, layoutContributorLine);
     }
+
+
 }

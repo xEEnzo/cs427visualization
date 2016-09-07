@@ -32,13 +32,18 @@
             android:orientation="vertical"></LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/layoutIssue"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="130sp"
-        android:orientation="horizontal"
-        android:scrollbars="horizontal">
+        android:layout_height="130sp">
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layoutIssue"
+            android:layout_width="match_parent"
+            android:layout_height="130sp"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
 
 </LinearLayout>
