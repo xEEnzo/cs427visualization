@@ -5,21 +5,25 @@
     android:orientation="horizontal">
 
     <TextView
+        android:id="@+id/tvContributorName"
         android:layout_width="150sp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:id="@+id/tvContributorName"
-        android:textSize="25sp"
         android:text="Contributor"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="25sp" />
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/layoutContributorLine"
-        android:orientation="horizontal"
-        android:scrollbars="horizontal">
-    </LinearLayout>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layoutContributorLine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:scrollbars="horizontal"/>
+    </HorizontalScrollView>
 
 </LinearLayout>

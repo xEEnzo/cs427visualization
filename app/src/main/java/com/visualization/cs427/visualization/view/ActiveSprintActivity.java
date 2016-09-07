@@ -46,7 +46,7 @@ public class ActiveSprintActivity extends AppCompatActivity {
         projectEntity = new ProjectEntity("1", "Jira");
         List<IssueEntity> issueEntities = new ArrayList<>();
         for (int i = 0; i < 10; ++i) {
-            issueEntities.add(new IssueEntity("" + i, "Issue" + 1, i));
+            issueEntities.add(new IssueEntity("" + i, "Issue " + i, i));
         }
         projectEntity.setIssueEntities((ArrayList<IssueEntity>) issueEntities);
         // ----------------------
@@ -61,7 +61,7 @@ public class ActiveSprintActivity extends AppCompatActivity {
         // ----------------------
         layoutIssue = (LinearLayout) findViewById(R.id.layoutIssue);
         layoutContributorPoint = (LinearLayout) findViewById(R.id.layoutContributorPoint);
-        layoutContributorLine = (LinearLayout) findViewById(R.id.layoutContributorLine);
+        layoutContributorLine = (LinearLayout) findViewById(R.id.layoutContributorIssue);
         controller = new ActiveSprintInteractionController(this, issueEntities, contributorEntities, lineHashMap,
                 layoutIssue, layoutContributorPoint, layoutContributorLine);
     }

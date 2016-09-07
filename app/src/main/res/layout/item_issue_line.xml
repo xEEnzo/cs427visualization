@@ -10,28 +10,33 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/layoutCoding"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"></LinearLayout>
+            android:background="@color/blue"
+            android:orientation="horizontal"></LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutReview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorAccent"></LinearLayout>
+            android:orientation="horizontal"></LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutTest"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/blue"></LinearLayout>
+            android:orientation="horizontal"></LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutDone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"></LinearLayout>
+            android:orientation="horizontal"></LinearLayout>
 
     </LinearLayout>
 
@@ -39,20 +44,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="25sp">
+        android:padding="5sp">
 
         <TextView
-            android:id="@+id/tvContributorName"
+            android:id="@+id/tvIssueName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:padding="5sp"
             android:text="Contributor"
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/tvContributorPoint"
+            android:id="@+id/tvEpicName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/black"
@@ -60,6 +65,6 @@
             android:padding="5sp"
             android:text="88"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
     </LinearLayout>
 </FrameLayout>
