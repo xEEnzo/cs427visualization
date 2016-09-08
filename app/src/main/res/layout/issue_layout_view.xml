@@ -28,7 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Issue Name"
-            android:gravity="center"
+            android:gravity="left"
+            android:paddingLeft="10sp"
+            android:singleLine="true"
             android:layout_weight="1"
             android:id="@+id/txtIssueName"
             android:textSize="@dimen/text_size_normal"/>
@@ -36,7 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="5sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"
             tools:text="Epic Name"
             android:id="@+id/txtEpicName"
             android:background="@color/yellow"
@@ -48,7 +51,9 @@
             tools:text="L"
             android:id="@+id/txtContributor"
             android:gravity="center"
-            android:padding="5sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"
+            android:layout_marginLeft="6sp"
             />
     </LinearLayout>
 </LinearLayout>

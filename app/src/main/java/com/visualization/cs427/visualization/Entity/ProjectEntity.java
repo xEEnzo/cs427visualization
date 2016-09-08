@@ -20,4 +20,10 @@ public class ProjectEntity extends Entity {
     public void setIssueEntities(ArrayList<IssueEntity> issueEntities) {
         this.issueEntities = issueEntities;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        ProjectEntity projectEntity = (ProjectEntity) obj;
+        return this.getId().equals(projectEntity.getId());
+    }
 }

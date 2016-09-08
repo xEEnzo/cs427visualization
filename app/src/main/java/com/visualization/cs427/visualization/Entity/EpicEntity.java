@@ -5,17 +5,18 @@ package com.visualization.cs427.visualization.Entity;
  */
 public class EpicEntity extends Entity {
 
-    private int colorResID;
+    private String colorResID;
 
-    public EpicEntity(String id, String name) {
+    public EpicEntity(String id, String name, String colorResID) {
         super(id, name);
+        this.colorResID = colorResID;
     }
 
-    public int getColorResID() {
+    public String getColorResID() {
         return colorResID;
     }
 
-    public void setColorResID(int colorResID) {
+    public void setColorResID(String colorResID) {
         this.colorResID = colorResID;
     }
 }
