@@ -2,6 +2,7 @@ package com.visualization.cs427.visualization.view;
 
 import android.app.ActionBar;
 import android.content.ClipData;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
@@ -208,7 +209,11 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-
+        if (v.getId() == R.id.txtCreateIssue )
+        {
+            Intent intent = new Intent(this,CreateIssueActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
