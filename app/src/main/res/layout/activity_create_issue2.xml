@@ -21,7 +21,8 @@
         >
 
         <TextView
-            android:layout_width="240dp"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="240dp"
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:visibility="invisible"
@@ -46,7 +47,8 @@
             android:layout_height="wrap_content"
             android:text="Issue Type"/>
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
+            android:layout_marginLeft="80dp"
             android:layout_height="wrap_content"
 
             android:visibility="invisible"
@@ -70,7 +72,8 @@
             android:layout_height="wrap_content"
             android:text="Summary"/>
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
+            android:layout_marginLeft="80dp"
             android:layout_height="wrap_content"
 
             android:visibility="invisible"
@@ -95,9 +98,9 @@
             android:layout_height="wrap_content"
             android:text="Story Points"/>
         <TextView
-            android:layout_width="63dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="63dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
@@ -120,9 +123,9 @@
             android:layout_height="wrap_content"
             android:text="Assignee"/>
         <TextView
-            android:layout_width="90dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="90dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"/>
         <Spinner
@@ -144,9 +147,9 @@
             android:layout_height="wrap_content"
             android:text="Epic"/>
         <TextView
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="120dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"/>
         <Spinner
@@ -156,26 +159,27 @@
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown" />
         <TextView
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="50dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"/>
 
         <ImageView
             android:layout_width="39dp"
             android:layout_height="39dp"
-
+            android:id="@+id/ImageAddEpic"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:src="@drawable/plus"/>
         <TextView
-            android:layout_width="10dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="10dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"/>
         <TextView
+            android:id="@+id/TextViewAddEpic"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:text="Add epic"
@@ -195,9 +199,9 @@
             android:layout_height="wrap_content"
             android:text="Linked Issues"/>
         <TextView
-            android:layout_width="60dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="60dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"/>
         <Spinner
@@ -219,9 +223,9 @@
             android:layout_height="wrap_content"
             android:text="Issue"/>
         <TextView
-            android:layout_width="112dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="112dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag"/>
         <Spinner
@@ -242,9 +246,9 @@
             android:layout_height="wrap_content"
             android:text="Description"/>
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-
+            android:layout_marginLeft="80dp"
             android:visibility="invisible"
             android:background="@drawable/grey_tag" />
 
@@ -262,8 +266,9 @@
         android:orientation="horizontal"
         android:layout_height="wrap_content">
         <TextView
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="350dp"
             android:visibility="invisible"
             />
         <Button

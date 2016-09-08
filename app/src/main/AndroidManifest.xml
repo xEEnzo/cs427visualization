@@ -22,7 +22,9 @@
         <activity
             android:name=".view.SprintDetailActivity"
             android:screenOrientation="landscape"></activity>
-        <activity android:name=".view.CreateIssueActivity"></activity>
+        <activity android:name=".view.CreateIssueActivity"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>
