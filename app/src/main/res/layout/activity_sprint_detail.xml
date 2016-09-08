@@ -38,30 +38,50 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Sprint 1"
-                android:text="Sprint"
-                android:id="@+id/txtSprint"
-                android:textSize="@dimen/text_size_normal"
-                android:padding="10sp"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Sprint 1"
+                    android:text="Sprint"
+                    android:id="@+id/txtSprint"
+                    android:textSize="@dimen/text_size_normal"
+                    android:padding="10sp"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="3sp"
+                    android:visibility="invisible"
+                    android:background="@drawable/grey_tag"
+                    android:id="@+id/txtNumIssues"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="3sp"
+                    android:visibility="invisible"
+                    android:background="@drawable/grey_tag"
+                    android:layout_marginLeft="8sp"
+                    android:id="@+id/txtTotalPoints"/>
+            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="3sp"
+                android:text="Active Sprint"
+                android:layout_gravity="bottom"
+                android:gravity="center"
                 android:visibility="invisible"
-                android:background="@drawable/grey_tag"
-                android:id="@+id/txtNumIssues"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="3sp"
-                android:visibility="invisible"
-                android:background="@drawable/grey_tag"
-                android:id="@+id/txtTotalPoints"/>
+                android:textColor="@color/white"
+                android:layout_marginBottom="3sp"
+                android:layout_marginRight="10sp"
+                android:background="@color/colorPrimary"
+                android:id="@+id/txtActiveSprint"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

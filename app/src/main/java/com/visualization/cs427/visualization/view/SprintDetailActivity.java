@@ -3,6 +3,7 @@ package com.visualization.cs427.visualization.view;
 import android.app.ActionBar;
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 
+import com.visualization.cs427.visualization.DAL.IssueDAL;
+import com.visualization.cs427.visualization.Entity.ContributorEntity;
+import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
+import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.R;
 
 import java.util.ArrayList;
@@ -28,13 +33,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SprintDetailActivity extends AppCompatActivity implements View.OnClickListener, View.OnDragListener, View.OnLongClickListener {
-    private TextView txtSprint, txtCreateissue;
+    private TextView txtSprint, txtCreateissue, txtProjectName, txtActiveSprint;
     private LinearLayout layoutSprint, layoutBacklog, layoutAll;
     private List<IssueEntity> issueEntities = new ArrayList<>();
     private List<View> viewListBacklog;
     private List<View> viewListSprint;
     private LayoutInflater inflater;
-    private TextView txtEmpty, txtNumIssues;
+    private TextView txtEmpty, txtNumIssues, txtTotalPoints;
     private View.OnDragListener onContainerDragListener;
     private ScrollView scrollView;
     private int screenHeight;
@@ -46,15 +51,20 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private boolean isChangeBackToLog = false;
     private View.OnLongClickListener sprintIssueLongCLick;
     private boolean rightDrop = false;
-
+    private String projectID;
+    private String projectName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprint_detail);
+        getData();;
         setUpOnContainerDrag();
         setUpSprintIssueLongClick();
         inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         txtSprint = (TextView) findViewById(R.id.txtSprint);
+        txtActiveSprint = (TextView) findViewById(R.id.txtActiveSprint);
+        txtProjectName = (TextView) findViewById(R.id.txtProjectName);
+        txtTotalPoints = (TextView) findViewById(R.id.txtTotalPoints);
         txtEmpty = (TextView) findViewById(R.id.txtEmpty);
         txtNumIssues = (TextView) findViewById(R.id.txtNumIssues);
         txtCreateissue = (TextView) findViewById(R.id.txtCreateIssue);
@@ -62,11 +72,22 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         layoutAll = (LinearLayout) findViewById(R.id.layoutAll);
         layoutBacklog = initLayout(R.id.layoutBacklog);
         layoutSprint = initLayout(R.id.layoutSprint);
-        initDummyData();
+        txtProjectName.setText(projectName);
         getScreenHeight();
         createBackLog();
         createSprint();
         setUpScrollView();
+    }
+
+    private void getData(){
+        Intent intent = getIntent();
+        projectID = intent.getStringExtra(OpenExistingActivity.PROJECT_ID);
+        projectName = intent.getStringExtra(OpenExistingActivity.PROJECT_NAME);
+        try {
+            issueEntities.addAll(IssueDAL.getInstance().getIssuebyProject(this,projectID));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setUpOnContainerDrag() {
@@ -75,11 +96,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             public boolean onDrag(View view, DragEvent dragEvent) {
                 switch (dragEvent.getAction()) {
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.d("nhatlinh95", "startDraginContainer");
                         changeContainer(view.getId());
                         break;
                     case DragEvent.ACTION_DRAG_EXITED:
-                        Log.d("nhatlinh95", "onExitContainer");
                         changeContainer(view.getId());
                         break;
                     case DragEvent.ACTION_DRAG_LOCATION:
@@ -173,7 +192,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private void initDummyData() {
         for (int i = 0; i < 10; ++i) {
             String name = "Issue" + i;
-            IssueEntity entity = new IssueEntity(String.valueOf(i), name, i % 3, null, 0, null, -1, -1);
+            IssueEntity entity = new IssueEntity(String.valueOf(i), name, i % 3, null, 0, null, -1, -1, null, null);
             issueEntities.add(entity);
         }
     }
@@ -182,6 +201,21 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         View root = inflater.inflate(R.layout.issue_layout_view, null);
         ViewHolder holder = new ViewHolder(root);
         holder.txtIssueName.setText(issueEntity.getName());
+        if (issueEntity.getEpic() != null){
+            EpicEntity epicEntity = issueEntity.getEpic();
+            holder.txtEpicName.setText(epicEntity.getName());
+            holder.txtEpicName.setBackgroundColor(Color.parseColor("#"+epicEntity.getColorResID()));
+            if (holder.txtEpicName.getVisibility() == View.INVISIBLE){
+                holder.txtEpicName.setVisibility(View.VISIBLE);
+            }
+        }
+        if (issueEntity.getAssignee() != null){
+            ContributorEntity entity = issueEntity.getAssignee();
+            String name = entity.getName();
+            String [] names = name.split(" ");
+            holder.txtContributor.setText(names[names.length-1]);
+            holder.txtContributor.setBackgroundResource(R.drawable.grey_tag);
+        }
         Integer issuetypeID = getIssueTypeID(issueEntity.getType());
         if (issuetypeID != null) {
             holder.ivIssueType.setBackgroundResource(issuetypeID);
@@ -190,6 +224,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         root.setOnLongClickListener(this);
         root.setTag(R.string.issue_id, issueEntity.getId());
         root.setTag(R.string.issue_location, IssueEntity.LOCATION_BACKLOG);
+        root.setTag(R.string.issue_point, issueEntity.getPoint());
         return root;
     }
 
@@ -429,15 +464,35 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             dropped.setTag(R.string.issue_position, selectedIndex);
             viewList.add(selectedIndex, dropped);
         }
-        setNumIssues(viewList);
+        setNumIssues();
+        setTotalSprintPoint();
     }
 
-    private void setNumIssues(List<View> viewLists){
-        int size = viewLists.size();
-        if (size == 0){
-            txtNumIssues.setVisibility(View.INVISIBLE);
+    private void setTotalSprintPoint(){
+        if (viewListSprint.size() == 0){
+            txtTotalPoints.setVisibility(View.INVISIBLE);
             return;
         }
+        txtTotalPoints.setVisibility(View.VISIBLE);
+        int total = 0;
+        for (View view : viewListSprint){
+            total +=(int)view.getTag(R.string.issue_point);
+        }
+        if (total == 1){
+            txtTotalPoints.setText(total + " point");
+            return;
+        }
+        txtTotalPoints.setText(total + " points");
+    }
+
+    private void setNumIssues(){
+        int size = viewListSprint.size();
+        if (size == 0){
+            txtNumIssues.setVisibility(View.INVISIBLE);
+            txtActiveSprint.setVisibility(View.INVISIBLE);
+            return;
+        }
+        txtActiveSprint.setVisibility(View.VISIBLE);
         txtNumIssues.setVisibility(View.VISIBLE);
         if (size == 1){
             txtNumIssues.setText(size + " issue");

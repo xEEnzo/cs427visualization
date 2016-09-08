@@ -22,8 +22,10 @@ public class IssueEntity extends Entity {
     private String description;
     private int processStatus;
     private int locationStatus;
+    private ContributorEntity assignee;
+    private EpicEntity epic;
 
-    public IssueEntity(String id, String name, int type, String summary, int point, String description, int processStatus, int locationStatus) {
+    public IssueEntity(String id, String name, int type, String summary, int point, String description, int processStatus, int locationStatus, ContributorEntity assignee, EpicEntity epic) {
         super(id, name);
         this.type = type;
         this.summary = summary;
@@ -31,6 +33,8 @@ public class IssueEntity extends Entity {
         this.description = description;
         this.processStatus = processStatus;
         this.locationStatus = locationStatus;
+        this.assignee = assignee;
+        this.epic = epic;
     }
 
     public int getType() {
@@ -79,5 +83,21 @@ public class IssueEntity extends Entity {
 
     public void setLocationStatus(int locationStatus) {
         this.locationStatus = locationStatus;
+    }
+
+    public ContributorEntity getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(ContributorEntity assignee) {
+        this.assignee = assignee;
+    }
+
+    public EpicEntity getEpic() {
+        return epic;
+    }
+
+    public void setEpic(EpicEntity epic) {
+        this.epic = epic;
     }
 }
