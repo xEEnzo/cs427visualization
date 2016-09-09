@@ -36,6 +36,7 @@ public class IssueDatabaseHelper extends DatabaseHelper {
         return issueEntities;
     }
 
+
     @Override
     protected IssueEntity getEntityFromCursor(Cursor cursor) throws DatabaseException {
         EpicDatabaseHelper epicDatabaseHelper = null;
