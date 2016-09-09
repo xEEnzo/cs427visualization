@@ -1,7 +1,9 @@
 package com.visualization.cs427.visualization.DatabaseHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteTransactionListener;
 
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.Entity;
@@ -34,6 +36,28 @@ public class IssueDatabaseHelper extends DatabaseHelper {
             issueEntities.add(getEntityFromCursor(cursor));
         } while (cursor.moveToNext());
         return issueEntities;
+    }
+
+    public void updateLocationOfIssue(IssueEntity issueEntity) throws DatabaseException {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(IssueColumn.ISSUE_LOCATION_STATUS.getColumnName(), issueEntity.getLocationStatus());
+        try{
+            database.beginTransaction();
+            int rowAffect = database.update(IssueColumn.TABLE_NAME, contentValues, IssueColumn.ISSUE_ID.getColumnName() + "=?", new String[]{issueEntity.getId()});
+            if (rowAffect == 0){
+                throw new DatabaseException();
+            }
+            database.setTransactionSuccessful();
+        }
+        finally{
+            database.endTransaction();
+        }
+
+    }
+
+    public List<IssueEntity> updateIssueLocation (IssueEntity entity, String projectID) throws DatabaseException {
+        updateLocationOfIssue(entity);
+        return getIssueByProjectID(projectID);
     }
 
 

@@ -37,6 +37,12 @@ public class IssueEntity extends Entity {
         this.epic = epic;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        IssueEntity entity = (IssueEntity) obj;
+        return this.getId().equals(entity.getId());
+    }
+
     public int getType() {
         return type;
     }

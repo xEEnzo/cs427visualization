@@ -26,6 +26,8 @@ public class EpicDatabaseHelper extends DatabaseHelper {
         return getEntityFromCursor(cursor);
     }
 
+
+
     @Override
     protected EpicEntity getEntityFromCursor(Cursor cursor) {
         return new EpicEntity(String.valueOf(cursor.getInt(cursor.getColumnIndex(EpicColumn.EPIC_ID.getColumnName()))),
