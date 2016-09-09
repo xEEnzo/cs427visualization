@@ -2,12 +2,15 @@ package com.visualization.cs427.visualization.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.visualization.cs427.visualization.R;
 
@@ -15,6 +18,7 @@ public class CreateIssueActivity extends AppCompatActivity {
     public void Create(View view)
     {
         setContentView(R.layout.activity_sprint_detail);
+
     }
     public void Cancle(View view)
     {
@@ -24,6 +28,9 @@ public class CreateIssueActivity extends AppCompatActivity {
     private TextView TextViewAddEpic;
     private Button Create,Cancle;
     private ImageView ImageAddEpic;
+    private EditText editTextSummary,editTextStoryPoints,editTextDescription;
+    private String textspinnerIssueType,textSummary,textStoryPoints,textAssignee,textEpic,textLinkedIssue,textIssue,textDescription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +79,23 @@ public class CreateIssueActivity extends AppCompatActivity {
         Cancle = (Button) findViewById(R.id.Cancle);
 
         TextViewAddEpic = (TextView) findViewById(R.id.TextViewAddEpic);
+        editTextSummary = (EditText) findViewById(R.id.editTextSummary);
+        editTextDescription = (EditText) findViewById(R.id.editTextDescription);
+        editTextStoryPoints = (EditText) findViewById(R.id.editTextStoryPoints);
 
         /*-------------------------------------findViewById---------------------------------------*/
+
+
+        /*----------------------------------Get content of user input ----------------------------*/
+        textspinnerIssueType = spinnerIssueType.getSelectedItem().toString();
+        textSummary = editTextSummary.getText().toString();
+        textStoryPoints = editTextStoryPoints.getText().toString();
+        textAssignee = spinnerAssignee.getSelectedItem().toString();
+        textEpic = spinnerEpic.getSelectedItem().toString();
+        textLinkedIssue = spinnerLinkedIssue.getSelectedItem().toString();
+        textIssue = spinnerIssue.getSelectedItem().toString();
+        textDescription = editTextDescription.getText().toString();
+        /*----------------------------------Get content of user input ----------------------------*/
 
     }
 }
