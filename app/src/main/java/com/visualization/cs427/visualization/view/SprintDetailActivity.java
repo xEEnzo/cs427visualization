@@ -25,8 +25,11 @@ import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
+import com.visualization.cs427.visualization.Entity.ProjectEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.R;
+import com.visualization.cs427.visualization.Utils.CurrentProject;
+import com.visualization.cs427.visualization.Utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +56,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private boolean rightDrop = false;
     private String projectID;
     private String projectName;
+    private boolean sprintEmptyInitial = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +87,10 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         Intent intent = getIntent();
         projectID = intent.getStringExtra(OpenExistingActivity.PROJECT_ID);
         projectName = intent.getStringExtra(OpenExistingActivity.PROJECT_NAME);
+        CurrentProject.getInstance().setProjectEntity(new ProjectEntity(projectID, projectName));
         try {
             issueEntities.addAll(IssueDAL.getInstance().getIssuebyProject(this,projectID));
+            CurrentProject.getInstance().setIssueEntities(issueEntities);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
@@ -176,17 +182,39 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
 
     private void createBackLog() {
         viewListBacklog = new ArrayList<>();
-        for (int i = 0; i < issueEntities.size(); ++i) {
-            View view = createIssueView(issueEntities.get(i));
+        List<IssueEntity> baclLogIssues = DataUtils.getIssueInBackLog(issueEntities);
+        for (int i = 0; i < baclLogIssues.size(); ++i) {
+            View view = createIssueView(baclLogIssues.get(i));
             view.setTag(R.string.issue_position, i);
+            view.setTag(R.string.issue_location, IssueEntity.LOCATION_BACKLOG);
             viewListBacklog.add(view);
             view.setOnDragListener(this);
+            view.setOnLongClickListener(this);
             layoutBacklog.addView(view);
         }
     }
 
     private void createSprint(){
         viewListSprint = new ArrayList<>();
+        List<IssueEntity> sprintIssues = DataUtils.getIssueInSprint(issueEntities);
+        for (int i = 0; i < sprintIssues.size(); ++i) {
+            IssueEntity entity = sprintIssues.get(i);
+            View view = createIssueView(entity);
+            view.setTag(R.string.issue_position, i);
+            view.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
+            view.setOnLongClickListener(sprintIssueLongCLick);
+            viewListSprint.add(view);
+            view.setOnDragListener(this);
+            layoutSprint.addView(view);
+        }
+        if (sprintIssues.size() != 0){
+            sprintEmptyInitial = false;
+            deleteParent(txtEmpty);
+            layoutSprint.removeView(txtEmpty);
+            layoutSprint.setBackgroundResource(R.drawable.border);
+            setNumIssues();
+            setTotalSprintPoint();
+        }
     }
 
     private void initDummyData() {
@@ -216,14 +244,16 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             holder.txtContributor.setText(names[names.length-1]);
             holder.txtContributor.setBackgroundResource(R.drawable.grey_tag);
         }
+        if (issueEntity.getPoint() != -1){
+            holder.txtPoint.setText(issueEntity.getPoint()+"");
+            holder.txtPoint.setBackgroundResource(R.drawable.grey_tag);
+        }
         Integer issuetypeID = getIssueTypeID(issueEntity.getType());
         if (issuetypeID != null) {
             holder.ivIssueType.setBackgroundResource(issuetypeID);
         }
         root.setOnDragListener(this);
-        root.setOnLongClickListener(this);
         root.setTag(R.string.issue_id, issueEntity.getId());
-        root.setTag(R.string.issue_location, IssueEntity.LOCATION_BACKLOG);
         root.setTag(R.string.issue_point, issueEntity.getPoint());
         return root;
     }
@@ -369,9 +399,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         View dropped = (View) event.getLocalState();
         int issueLocation = (int) dropped.getTag(R.string.issue_location);
         int oldPosofDropped = (int) dropped.getTag(R.string.issue_position);
-        String id = (String) dropped.getTag();
-        // update database
-         if (dropped.getVisibility() == View.INVISIBLE){
+        String id = (String) dropped.getTag(R.string.issue_id);
+        IssueEntity update = DataUtils.findIssueByID(issueEntities, id);
+        if (dropped.getVisibility() == View.INVISIBLE){
             dropped.setVisibility(View.VISIBLE);
         }
         deleteParent(dropped);
@@ -387,6 +417,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                 viewListSprint.remove(viewListSprint.size()-1);
                 emptyLayoutInSprint = false;
             }
+            updateIssuInDatabase(update, true);
             addViewToContainer(dropped, layoutBacklog);
             if (issueLocation != IssueEntity.LOCATION_BACKLOG){
                 viewListSprint.remove(dropped);
@@ -403,7 +434,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         else {
             dropped.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
             dropped.setOnLongClickListener(sprintIssueLongCLick);
-            if (layoutSprint.getChildCount()==1){
+            if (sprintEmptyInitial && layoutSprint.getChildCount()==1){
                 layoutSprint.removeAllViews();
                 layoutSprint.setBackgroundResource(R.drawable.border);
             }
@@ -421,6 +452,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                 }
                 emptyLayoutInBackLog = false;
             }
+             updateIssuInDatabase(update, false);
             addViewToContainer(dropped, layoutSprint);
             if (issueLocation != IssueEntity.LOCATION_SPRINT){
                 viewListBacklog.remove(dropped);
@@ -485,6 +517,22 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         txtTotalPoints.setText(total + " points");
     }
 
+    private void updateIssuInDatabase(IssueEntity update, boolean isInBackLog){
+        if (isInBackLog) {
+            update.setLocationStatus(IssueEntity.LOCATION_BACKLOG);
+        }
+        else{
+            update.setLocationStatus(IssueEntity.LOCATION_SPRINT);
+        }
+        try {
+            issueEntities.clear();
+            issueEntities.addAll(IssueDAL.getInstance().updateIssueLocation(this, update, CurrentProject.getInstance().getProjectEntity().getId()));
+            CurrentProject.getInstance().setIssueEntities(issueEntities);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setNumIssues(){
         int size = viewListSprint.size();
         if (size == 0){
@@ -514,7 +562,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
 
 
     private class ViewHolder {
-        private TextView txtIssueName, txtEpicName, txtContributor;
+        private TextView txtIssueName, txtEpicName, txtContributor, txtPoint;
         private ImageView ivIssueType;
 
         public ViewHolder(View root) {
@@ -522,6 +570,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             txtContributor = (TextView) root.findViewById(R.id.txtContributor);
             txtEpicName = (TextView) root.findViewById(R.id.txtEpicName);
             ivIssueType = (ImageView) root.findViewById(R.id.ivIssueType);
+            txtPoint = (TextView) root.findViewById(R.id.txtPoint);
 
         }
     }

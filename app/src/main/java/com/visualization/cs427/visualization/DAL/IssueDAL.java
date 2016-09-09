@@ -30,4 +30,15 @@ public class IssueDAL {
             helper.closeConnection();
         }
     }
+
+    public List<IssueEntity> updateIssueLocation (Context context, IssueEntity issueEntity, String projectID) throws DatabaseException {
+        IssueDatabaseHelper helper = null;
+        try {
+            helper = new IssueDatabaseHelper(context);
+            return helper.updateIssueLocation(issueEntity, projectID);
+        }
+        finally {
+            helper.closeConnection();
+        }
+    }
 }

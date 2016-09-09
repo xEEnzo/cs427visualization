@@ -46,10 +46,20 @@
             android:visibility="invisible"
             />
         <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="L"
+        android:id="@+id/txtContributor"
+        android:gravity="center"
+        android:paddingLeft="5sp"
+        android:paddingRight="5sp"
+        android:layout_marginLeft="6sp"
+        />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="L"
-            android:id="@+id/txtContributor"
+            android:id="@+id/txtPoint"
             android:gravity="center"
             android:paddingLeft="5sp"
             android:paddingRight="5sp"
