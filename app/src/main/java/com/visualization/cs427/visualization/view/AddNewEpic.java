@@ -1,5 +1,6 @@
 package com.visualization.cs427.visualization.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,7 +17,8 @@ public class AddNewEpic extends AppCompatActivity {
 
     public void Add(View view)
     {
-
+        Intent intent = new Intent(this,IssueDetail.class);
+        startActivity(intent);
     }
     public void Cancle(View view)
     {
