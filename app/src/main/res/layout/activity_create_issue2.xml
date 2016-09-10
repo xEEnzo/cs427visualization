@@ -80,7 +80,7 @@
             android:background="@drawable/grey_tag"
             android:id="@+id/txtNumIssues3"/>
         <EditText
-            android:id="@+id/summary"
+            android:id="@+id/editTextSummary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Type here ..."
@@ -105,7 +105,7 @@
             android:background="@drawable/grey_tag"
             />
         <EditText
-            android:id="@+id/StoryPoint"
+            android:id="@+id/editTextStoryPoints"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -183,6 +183,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:text="Add epic"
+            android:onClick="AddEpic"
             android:layout_marginTop="6dp"
             android:textColor="#0091ff"
             android:layout_weight="0.14" />
@@ -253,7 +254,7 @@
             android:background="@drawable/grey_tag" />
 
         <EditText
-            android:id="@+id/Description"
+            android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Type here ..."

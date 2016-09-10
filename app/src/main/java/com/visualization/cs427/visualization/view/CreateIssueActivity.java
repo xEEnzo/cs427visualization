@@ -1,5 +1,6 @@
 package com.visualization.cs427.visualization.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,9 +22,16 @@ public class CreateIssueActivity extends AppCompatActivity {
 
     }
     public void Cancle(View view)
+
     {
         setContentView(R.layout.activity_sprint_detail);
     }
+    public void AddEpic(View view)
+    {
+        Intent intent = new Intent(this,AddNewEpic.class);
+        startActivity(intent);
+    }
+
     private Spinner spinnerIssueType,spinnerAssignee,spinnerEpic,spinnerLinkedIssue,spinnerIssue;
     private TextView TextViewAddEpic;
     private Button Create,Cancle;
