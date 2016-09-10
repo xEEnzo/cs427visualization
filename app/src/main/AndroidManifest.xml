@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.visualization.cs427.visualization">
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,9 +25,13 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".view.SprintDetailActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".view.CreateIssueActivity"
             android:screenOrientation="landscape"></activity>
-        <activity android:name=".view.CreateIssueActivity"
+        <activity android:name=".view.AddNewEpic"
             android:screenOrientation="landscape">
+
         </activity>
     </application>
 
