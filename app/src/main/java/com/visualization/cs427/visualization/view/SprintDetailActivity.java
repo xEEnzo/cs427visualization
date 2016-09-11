@@ -53,7 +53,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private boolean emptyLayoutInSprint = false;
     private boolean isChangeBackToLog = false;
     private View.OnLongClickListener sprintIssueLongCLick;
-    private View.OnClickListener sprintIssueCLick;
+
 
     private boolean rightDrop = false;
     private String projectID;
@@ -66,7 +66,6 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         getData();;
         setUpOnContainerDrag();
         setUpSprintIssueLongClick();
-        setUpSprintIssueClick();
         inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         txtSprint = (TextView) findViewById(R.id.txtSprint);
         txtActiveSprint = (TextView) findViewById(R.id.txtActiveSprint);
@@ -142,15 +141,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             }
         };
     }
-    private void setUpSprintIssueClick(){
-        sprintIssueCLick = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(),IssueDetail.class);
-                v.getContext().startActivity(intent);
-            }
-        };
-    }
+
 
     private void changeContainer(int id) {
         if (isInBackLog && id == R.id.layoutSprint) {
@@ -216,7 +207,6 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             view.setTag(R.string.issue_position, i);
             view.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
             view.setOnLongClickListener(sprintIssueLongCLick);
-            view.setOnClickListener(sprintIssueCLick);
             viewListSprint.add(view);
             view.setOnDragListener(this);
             layoutSprint.addView(view);
@@ -291,6 +281,11 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         if (v.getId() == R.id.txtCreateIssue )
         {
             Intent intent = new Intent(this,CreateIssueActivity.class);
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(this,IssueDetail.class);
             startActivity(intent);
         }
 
