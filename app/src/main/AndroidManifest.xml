@@ -28,11 +28,12 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".view.CreateIssueActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".view.AddNewEpic"
             android:screenOrientation="landscape"></activity>
-        <activity android:name=".view.AddNewEpic"
-            android:screenOrientation="landscape">
-
-        </activity>
+        <activity android:name=".view.IssueDetail"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

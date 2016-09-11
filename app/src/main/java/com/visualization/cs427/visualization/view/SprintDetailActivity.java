@@ -40,6 +40,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private LinearLayout layoutSprint, layoutBacklog, layoutAll;
     private List<IssueEntity> issueEntities = new ArrayList<>();
     private List<View> viewListBacklog;
+    private List<View> viewListBacklogtemp;
     private List<View> viewListSprint;
     private LayoutInflater inflater;
     private TextView txtEmpty, txtNumIssues, txtTotalPoints;
@@ -53,6 +54,8 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private boolean emptyLayoutInSprint = false;
     private boolean isChangeBackToLog = false;
     private View.OnLongClickListener sprintIssueLongCLick;
+
+
     private boolean rightDrop = false;
     private String projectID;
     private String projectName;
@@ -61,7 +64,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprint_detail);
-        getData();;
+        getData();
         setUpOnContainerDrag();
         setUpSprintIssueLongClick();
         inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -140,6 +143,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         };
     }
 
+
     private void changeContainer(int id) {
         if (isInBackLog && id == R.id.layoutSprint) {
             selectedIndex = layoutSprint.getChildCount();
@@ -190,6 +194,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             viewListBacklog.add(view);
             view.setOnDragListener(this);
             view.setOnLongClickListener(this);
+            view.setOnClickListener(this);
             layoutBacklog.addView(view);
         }
     }
@@ -277,6 +282,16 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         if (v.getId() == R.id.txtCreateIssue )
         {
             Intent intent = new Intent(this,CreateIssueActivity.class);
+            startActivity(intent);
+        }
+
+        else
+        {
+        //    viewListBacklogtemp = new ArrayList<>();
+            int index = CurrentProject.getInstance().getIssueEntities().indexOf(v);
+
+            Intent intent = new Intent(this,IssueDetail.class);
+            intent.putExtra("index",index);
             startActivity(intent);
         }
     }
@@ -434,7 +449,8 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         else {
             dropped.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
             dropped.setOnLongClickListener(sprintIssueLongCLick);
-            if (sprintEmptyInitial && layoutSprint.getChildCount()==1){
+
+             if (sprintEmptyInitial && layoutSprint.getChildCount()==1){
                 layoutSprint.removeAllViews();
                 layoutSprint.setBackgroundResource(R.drawable.border);
             }
