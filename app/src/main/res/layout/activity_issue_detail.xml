@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/TextViewType"
-            android:text="Task"
+
             android:textSize="17dp"/>
     </LinearLayout>
 

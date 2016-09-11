@@ -40,6 +40,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private LinearLayout layoutSprint, layoutBacklog, layoutAll;
     private List<IssueEntity> issueEntities = new ArrayList<>();
     private List<View> viewListBacklog;
+    private List<View> viewListBacklogtemp;
     private List<View> viewListSprint;
     private LayoutInflater inflater;
     private TextView txtEmpty, txtNumIssues, txtTotalPoints;
@@ -63,7 +64,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sprint_detail);
-        getData();;
+        getData();
         setUpOnContainerDrag();
         setUpSprintIssueLongClick();
         inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -283,12 +284,16 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             Intent intent = new Intent(this,CreateIssueActivity.class);
             startActivity(intent);
         }
+
         else
         {
+        //    viewListBacklogtemp = new ArrayList<>();
+            int index = CurrentProject.getInstance().getIssueEntities().indexOf(v);
+
             Intent intent = new Intent(this,IssueDetail.class);
+            intent.putExtra("index",index);
             startActivity(intent);
         }
-
     }
 
     @Override
