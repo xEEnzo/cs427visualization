@@ -17,8 +17,7 @@ public class AddNewEpic extends AppCompatActivity {
 
     public void Add(View view)
     {
-        Intent intent = new Intent(this,IssueDetail.class);
-        startActivity(intent);
+
     }
     public void Cancle(View view)
     {

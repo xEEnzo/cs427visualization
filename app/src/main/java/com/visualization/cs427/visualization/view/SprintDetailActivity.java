@@ -53,6 +53,8 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private boolean emptyLayoutInSprint = false;
     private boolean isChangeBackToLog = false;
     private View.OnLongClickListener sprintIssueLongCLick;
+    private View.OnClickListener sprintIssueCLick;
+
     private boolean rightDrop = false;
     private String projectID;
     private String projectName;
@@ -64,6 +66,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         getData();;
         setUpOnContainerDrag();
         setUpSprintIssueLongClick();
+        setUpSprintIssueClick();
         inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         txtSprint = (TextView) findViewById(R.id.txtSprint);
         txtActiveSprint = (TextView) findViewById(R.id.txtActiveSprint);
@@ -139,6 +142,15 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             }
         };
     }
+    private void setUpSprintIssueClick(){
+        sprintIssueCLick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(),IssueDetail.class);
+                v.getContext().startActivity(intent);
+            }
+        };
+    }
 
     private void changeContainer(int id) {
         if (isInBackLog && id == R.id.layoutSprint) {
@@ -190,6 +202,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             viewListBacklog.add(view);
             view.setOnDragListener(this);
             view.setOnLongClickListener(this);
+            view.setOnClickListener(this);
             layoutBacklog.addView(view);
         }
     }
@@ -203,6 +216,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             view.setTag(R.string.issue_position, i);
             view.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
             view.setOnLongClickListener(sprintIssueLongCLick);
+            view.setOnClickListener(sprintIssueCLick);
             viewListSprint.add(view);
             view.setOnDragListener(this);
             layoutSprint.addView(view);
@@ -279,6 +293,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             Intent intent = new Intent(this,CreateIssueActivity.class);
             startActivity(intent);
         }
+
     }
 
     @Override
@@ -434,7 +449,8 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         else {
             dropped.setTag(R.string.issue_location, IssueEntity.LOCATION_SPRINT);
             dropped.setOnLongClickListener(sprintIssueLongCLick);
-            if (sprintEmptyInitial && layoutSprint.getChildCount()==1){
+
+             if (sprintEmptyInitial && layoutSprint.getChildCount()==1){
                 layoutSprint.removeAllViews();
                 layoutSprint.setBackgroundResource(R.drawable.border);
             }
