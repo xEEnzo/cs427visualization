@@ -2,6 +2,8 @@ package com.visualization.cs427.visualization.Entity;
 
 import com.visualization.cs427.visualization.R;
 
+import java.util.List;
+
 /**
  * Created by Toan on 9/1/2016.
  */
@@ -27,6 +29,7 @@ public class IssueEntity extends Entity {
     private int locationStatus;
     private ContributorEntity assignee;
     private EpicEntity epic;
+    private List<IssueEntity> blocker, blocked;
 
     public IssueEntity (String id) {
         super(id, null);
@@ -160,5 +163,21 @@ public class IssueEntity extends Entity {
             default:
                 return "";
         }
+    }
+
+    public List<IssueEntity> getBlocker() {
+        return blocker;
+    }
+
+    public void setBlocker(List<IssueEntity> blocker) {
+        this.blocker = blocker;
+    }
+
+    public List<IssueEntity> getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(List<IssueEntity> blocked) {
+        this.blocked = blocked;
     }
 }

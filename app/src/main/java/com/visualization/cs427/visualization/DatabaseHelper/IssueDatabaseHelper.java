@@ -10,6 +10,7 @@ import com.visualization.cs427.visualization.Entity.Entity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
+import com.visualization.cs427.visualization.Mapping.IssueBlockColumn;
 import com.visualization.cs427.visualization.Mapping.IssueColumn;
 import com.visualization.cs427.visualization.Mapping.TimeLogColumn;
 
@@ -39,6 +40,40 @@ public class IssueDatabaseHelper extends DatabaseHelper {
         do {
             issueEntities.add(getEntityFromCursor(cursor));
         } while (cursor.moveToNext());
+        for (IssueEntity issueEntity : issueEntities) {
+            // get blocked
+            StringBuilder queryBlocked = new StringBuilder();
+            queryBlocked.append("SELECT * FROM " + IssueBlockColumn.TABLE_NAME + " left join " + IssueColumn.TABLE_NAME);
+            queryBlocked.append(" on " + IssueBlockColumn.ISSUE_BLOCKED.getColumnName() + " = " + IssueColumn.ISSUE_ID.getColumnName());
+            queryBlocked.append(" WHERE " + IssueBlockColumn.ISSUE_BLOCKER.getColumnName() + " = ?");
+            Cursor cursorBlocked = database.rawQuery(queryBlocked.toString(), new String[]{issueEntity.getId()});
+            List<IssueEntity> blocked = new ArrayList<>();
+            if (!cursorBlocked.moveToFirst()) {
+                issueEntity.setBlocked(blocked);
+            } else {
+                do {
+                    IssueEntity entity = getEntityFromCursor(cursorBlocked);
+                    blocked.add(entity);
+                } while (cursorBlocked.moveToNext());
+                issueEntity.setBlocked(blocked);
+            }
+            // get blocker
+            StringBuilder queryBlocker = new StringBuilder();
+            queryBlocker.append("SELECT * FROM " + IssueBlockColumn.TABLE_NAME + " left join " + IssueColumn.TABLE_NAME);
+            queryBlocker.append(" on " + IssueBlockColumn.ISSUE_BLOCKER.getColumnName() + " = " + IssueColumn.ISSUE_ID.getColumnName());
+            queryBlocker.append(" WHERE " + IssueBlockColumn.ISSUE_BLOCKED.getColumnName() + " = ?");
+            Cursor cursorBlocker = database.rawQuery(queryBlocked.toString(), new String[]{issueEntity.getId()});
+            List<IssueEntity> blocker = new ArrayList<>();
+            if (!cursorBlocker.moveToFirst()) {
+                issueEntity.setBlocker(blocker);
+            } else {
+                do {
+                    IssueEntity entity = getEntityFromCursor(cursorBlocker);
+                    blocker.add(entity);
+                } while (cursorBlocker.moveToNext());
+                issueEntity.setBlocker(blocker);
+            }
+        }
         return issueEntities;
     }
 
