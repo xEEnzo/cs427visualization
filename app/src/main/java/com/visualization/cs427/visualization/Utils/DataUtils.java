@@ -48,7 +48,9 @@ public class DataUtils {
     public static List<ContributorEntity> getAllContributors (List<IssueEntity> issueEntities){
         List<ContributorEntity> contributorEntities = new ArrayList<>();
         for (IssueEntity entity : issueEntities){
-            contributorEntities.add(entity.getAssignee());
+            if (!contributorEntities.contains(entity.getAssignee())) {
+                contributorEntities.add(entity.getAssignee());
+            }
     }
     public static List<IssueEntity> orderIssueByTimeLog(Context context, List<IssueEntity> issueEntities) throws DatabaseException {
         List<Timestamp> timestampList = new ArrayList<>();

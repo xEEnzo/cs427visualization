@@ -30,4 +30,15 @@ public class EpicDAL {
             helper.closeConnection();
         }
     }
+
+    public List<EpicEntity> getAllbyProjectID (Context context, String projectID) throws DatabaseException {
+        EpicDatabaseHelper helper = null;
+        try {
+            helper = new EpicDatabaseHelper(context);
+            return helper.getAllEpic(projectID);
+        }
+        finally {
+            helper.closeConnection();
+        }
+    }
 }

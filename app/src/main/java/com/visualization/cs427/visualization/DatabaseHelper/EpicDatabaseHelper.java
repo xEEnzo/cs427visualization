@@ -33,10 +33,10 @@ public class EpicDatabaseHelper extends DatabaseHelper {
     public List<EpicEntity> getAllEpic (String projectID) throws DatabaseException {
         List<EpicEntity> epicEntities = new ArrayList<>();
         StringBuilder query = new StringBuilder();
-        query.append("SELECT ");
-        query.append(EpicColumn.EPIC_ID.getColumnName()+ ", ");
-        query.append(EpicColumn.EPIC_NAME.getColumnName() + ", ");
-        query.append(EpicColumn.EPIC_COLOR.getColumnName() + " ");
+        query.append("SELECT DISTINCT ");
+        query.append("A."+EpicColumn.EPIC_ID.getColumnName()+ ", ");
+        query.append("A."+EpicColumn.EPIC_NAME.getColumnName() + ", ");
+        query.append("A."+EpicColumn.EPIC_COLOR.getColumnName() + " ");
         query.append("FROM ");
         query.append(EpicColumn.TABLE_NAME+ " AS A");
         query.append(" LEFT JOIN "+ IssueColumn.TABLE_NAME + " AS B");

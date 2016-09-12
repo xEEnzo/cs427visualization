@@ -57,34 +57,6 @@ public class CreateIssueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue2);
 
-        /*-------------------------------- set content for Spinner -------------------------------*/
-
-        Spinner dropdownIssueType = (Spinner)findViewById(R.id.spinnerIssueType);
-        String[] items = new String[]{"Story", "Bug", "Task"};
-        ArrayAdapter<String> adapterIssiueType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        dropdownIssueType.setAdapter(adapterIssiueType);
-
-        Spinner dropdownAssingee = (Spinner)findViewById(R.id.spinnerAssignee);
-        String[] itemsAssignee = new String[]{"Contributor1", "Contributor2", "Contributor3"};
-        ArrayAdapter<String> adapterAssignee = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsAssignee);
-        dropdownAssingee.setAdapter(adapterAssignee);
-
-        Spinner dropdownEpic = (Spinner)findViewById(R.id.spinnerEpic);
-
-        Spinner dropdownLinedIssues = (Spinner)findViewById(R.id.spinnerLinkedIssues);
-        String[] itemsLinedIssues = new String[]{"Blocks", "Is blocked by"};
-        ArrayAdapter<String> adapterLinedIssues = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsLinedIssues);
-        dropdownLinedIssues.setAdapter(adapterLinedIssues);
-
-        Spinner dropdownIssue = (Spinner)findViewById(R.id.spinnerIssue);
-        String[] itemsIssue = new String[]{"Issue1", "Issue2","Issue3","Issue4"};
-        ArrayAdapter<String> adapterIssue = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsIssue);
-        dropdownIssue.setAdapter(adapterIssue);
-
-        /*-------------------------------- set content for Spinner -------------------------------*/
-
-
-
         /*-------------------------------------findViewById---------------------------------------*/
         spinnerIssueType = (Spinner) findViewById(R.id.spinnerIssueType);
         spinnerAssignee = (Spinner) findViewById(R.id.spinnerAssignee);
@@ -101,7 +73,17 @@ public class CreateIssueActivity extends AppCompatActivity {
         editTextDescription = (EditText) findViewById(R.id.editTextDescription);
         editTextStoryPoints = (EditText) findViewById(R.id.editTextStoryPoints);
 
-        /*-------------------------------------findViewById---------------------------------------*/
+        String[] items = new String[]{"Story", "Bug", "Task"};
+        ArrayAdapter<String> adapterIssiueType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        spinnerIssueType.setAdapter(adapterIssiueType);
+
+        String[] itemsLinedIssues = new String[]{"Blocks", "Is blocked by"};
+        ArrayAdapter<String> adapterLinedIssues = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsLinedIssues);
+        spinnerLinkedIssue.setAdapter(adapterLinedIssues);
+
+        setUpEpicSpinner();
+        setUpAssigneeSpinner();
+        setUpIssueLinkSpinner();
 
 
         /*----------------------------------Get content of user input ----------------------------*/
@@ -120,7 +102,7 @@ public class CreateIssueActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_ADD_EPIC){
-            if (requestCode == RESULT_OK_NEW_EPIC){
+            if (resultCode == RESULT_OK_NEW_EPIC){
                 setUpEpicSpinner();
             }
         }
@@ -135,6 +117,7 @@ public class CreateIssueActivity extends AppCompatActivity {
         String [] epicNames = new String[epicEntities.size()];
         for (EpicEntity epicEntity : epicEntities){
             epicNames[count] = epicEntity.getName();
+            ++count;
         }
         ArrayAdapter<String> adapterEpic = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, epicNames);
         spinnerEpic.setAdapter(adapterEpic);
@@ -149,8 +132,21 @@ public class CreateIssueActivity extends AppCompatActivity {
         String [] contributorNames = new String[contributorEntities.size()];
         for (ContributorEntity contributorEntity : contributorEntities){
             contributorNames[count] = contributorEntity.getName();
+            ++count;
         }
         ArrayAdapter<String> adapterAssignee = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, contributorNames);
         spinnerAssignee.setAdapter(adapterAssignee);
+    }
+
+    private void setUpIssueLinkSpinner(){
+        int count = 0;
+        List<IssueEntity> issueEntities = CurrentProject.getInstance().getIssueEntities();
+        String[] issueNames = new String[issueEntities.size()];
+        for (IssueEntity issueEntity : issueEntities){
+            issueNames[count] = issueEntity.getName();
+            ++count;
+        }
+        ArrayAdapter<String> adapterIssue = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, issueNames);
+        spinnerIssue.setAdapter(adapterIssue);
     }
 }

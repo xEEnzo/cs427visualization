@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 
+import com.visualization.cs427.visualization.DAL.EpicDAL;
 import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
@@ -95,6 +96,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         try {
             issueEntities.addAll(IssueDAL.getInstance().getIssuebyProject(this,projectID));
             CurrentProject.getInstance().setIssueEntities(issueEntities);
+            CurrentProject.getInstance().setEpicEntities(EpicDAL.getInstance().getAllbyProjectID(this, projectID));
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
