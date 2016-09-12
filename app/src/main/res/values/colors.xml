@@ -9,6 +9,10 @@
     <color name="red">#ac0000</color>
     <color name="blue">#9cedfb</color>
     <color name="black">#000000</color>
+    <color name="grey_background">#aaaaaa</color>
     <color name="transparent">#00000000</color>
+    <color name="green">#ccffcc</color>
+    <color name="grey_highlight">#e4e4e4</color>
+    <color name="red_highlight">#ff6666</color>
 </resources>
 

@@ -1,7 +1,13 @@
 package com.visualization.cs427.visualization.Utils;
 
-import com.visualization.cs427.visualization.Entity.IssueEntity;
+import android.content.Context;
 
+import com.visualization.cs427.visualization.DAL.IssueDAL;
+import com.visualization.cs427.visualization.Entity.IssueEntity;
+import com.visualization.cs427.visualization.Exception.DatabaseException;
+
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +42,29 @@ public class DataUtils {
             }
         }
         return entities;
+    }
+
+    public static List<IssueEntity> orderIssueByTimeLog(Context context, List<IssueEntity> issueEntities) throws DatabaseException {
+        List<Timestamp> timestampList = new ArrayList<>();
+        for (IssueEntity entity : issueEntities) {
+            timestampList.add(IssueDAL.getInstance().getTimeAssigned(context, entity, entity.getProcessStatus()));
+        }
+        for (int i = timestampList.size() - 1; i > 0; --i) {
+            int max = 0;
+            for (int j = 1; j <= i; ++j) {
+                if (timestampList.get(j).after(timestampList.get(max))) {
+                    max = j;
+                }
+            }
+            if (max != 0) {
+                Timestamp tmp = timestampList.get(i);
+                timestampList.set(i, timestampList.get(max));
+                timestampList.set(max, tmp);
+                IssueEntity issueEntity = issueEntities.get(i);
+                issueEntities.set(i, issueEntities.get(max));
+                issueEntities.set(max, issueEntity);
+            }
+        }
+        return issueEntities;
     }
 }

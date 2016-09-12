@@ -11,8 +11,11 @@ import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.Mapping.IssueColumn;
+import com.visualization.cs427.visualization.Mapping.TimeLogColumn;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -20,7 +23,8 @@ import java.util.List;
  */
 public class IssueDatabaseHelper extends DatabaseHelper {
     private Context context;
-    public IssueDatabaseHelper(Context context){
+
+    public IssueDatabaseHelper(Context context) {
         super(context);
         this.context = context;
     }
@@ -29,7 +33,7 @@ public class IssueDatabaseHelper extends DatabaseHelper {
         List<IssueEntity> issueEntities = new ArrayList<>();
         String query = "SELECT * FROM " + IssueColumn.TABLE_NAME + " WHERE " + IssueColumn.ISSUE_PROJECT.getColumnName() + " = ?";
         Cursor cursor = database.rawQuery(query, new String[]{projectID});
-        if (!cursor.moveToFirst()){
+        if (!cursor.moveToFirst()) {
             throw new DatabaseException();
         }
         do {
@@ -41,21 +45,21 @@ public class IssueDatabaseHelper extends DatabaseHelper {
     public void updateLocationOfIssue(IssueEntity issueEntity) throws DatabaseException {
         ContentValues contentValues = new ContentValues();
         contentValues.put(IssueColumn.ISSUE_LOCATION_STATUS.getColumnName(), issueEntity.getLocationStatus());
-        try{
+        try {
             database.beginTransaction();
             int rowAffect = database.update(IssueColumn.TABLE_NAME, contentValues, IssueColumn.ISSUE_ID.getColumnName() + "=?", new String[]{issueEntity.getId()});
-            if (rowAffect == 0){
+            if (rowAffect == 0) {
                 throw new DatabaseException();
             }
+
             database.setTransactionSuccessful();
-        }
-        finally{
+        } finally {
             database.endTransaction();
         }
 
     }
 
-    public List<IssueEntity> updateIssueLocation (IssueEntity entity, String projectID) throws DatabaseException {
+    public List<IssueEntity> updateIssueLocation(IssueEntity entity, String projectID) throws DatabaseException {
         updateLocationOfIssue(entity);
         return getIssueByProjectID(projectID);
     }
@@ -67,27 +71,55 @@ public class IssueDatabaseHelper extends DatabaseHelper {
         ContributorDatabaseHelper contributorDatabaseHelper = null;
         EpicEntity epic = null;
         ContributorEntity assignee = null;
-        try{
+        try {
             epicDatabaseHelper = new EpicDatabaseHelper(context);
             contributorDatabaseHelper = new ContributorDatabaseHelper(context);
             String contributorID = String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_ASSIGNEE.getColumnName())));
             String epicID = String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_EPIC.getColumnName())));
             epic = epicDatabaseHelper.getbyID(epicID);
             assignee = contributorDatabaseHelper.getbyID(contributorID);
-        }
-        finally {
+        } finally {
             epicDatabaseHelper.closeConnection();
             contributorDatabaseHelper.closeConnection();
         }
 
         return new IssueEntity(String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_ID.getColumnName()))),
-                               cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_NAME.getColumnName())),
-                               cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_TYPE.getColumnName())),
-                               cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_SUMMARY.getColumnName())),
-                               cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_POINT.getColumnName())),
-                               cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_DESCRIPTION.getColumnName())),
-                               cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_PROCESS_STATUS.getColumnName())),
-                               cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_LOCATION_STATUS.getColumnName())),
-                               assignee, epic);
+                cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_NAME.getColumnName())),
+                cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_TYPE.getColumnName())),
+                cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_SUMMARY.getColumnName())),
+                cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_POINT.getColumnName())),
+                cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_DESCRIPTION.getColumnName())),
+                cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_PROCESS_STATUS.getColumnName())),
+                cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_LOCATION_STATUS.getColumnName())),
+                assignee, epic);
+    }
+
+    public void updateIssueStatus(IssueEntity issueEntity, ContributorEntity contributorEntity, String spentTime) throws DatabaseException {
+        ContentValues contentUpdate = new ContentValues();
+        contentUpdate.put(IssueColumn.ISSUE_PROCESS_STATUS.getColumnName(), issueEntity.getProcessStatus());
+        contentUpdate.put(IssueColumn.ISSUE_ASSIGNEE.getColumnName(), contributorEntity.getId());
+        ContentValues contentInsert = new ContentValues();
+        contentInsert.put(TimeLogColumn.ISSUE_ID.getColumnName(), issueEntity.getId());
+        contentInsert.put(TimeLogColumn.STATUS.getColumnName(), issueEntity.getProcessStatus());
+        Timestamp timestamp = new Timestamp(Calendar.getInstance().getTimeInMillis());
+        contentInsert.put(TimeLogColumn.ASSIGNED_TIME.getColumnName(), timestamp.toString());
+        contentInsert.put(TimeLogColumn.SPENT_TIME.getColumnName(), spentTime);
+        try {
+            database.beginTransaction();
+            int rowAffect = database.update(IssueColumn.TABLE_NAME, contentUpdate, IssueColumn.ISSUE_ID.getColumnName() + " = ?", new String[]{issueEntity.getId()});
+            if (rowAffect == 0) {
+                throw new DatabaseException();
+            }
+            database.insert(TimeLogColumn.TABLE_NAME, null, contentInsert);
+            database.setTransactionSuccessful();
+//            String query = "SELECT * FROM " + IssueColumn.TABLE_NAME + " WHERE " + IssueColumn.ISSUE_ID.getColumnName() + " = ?";
+//            Cursor cursor = database.rawQuery(query, new String[]{issueEntity.getId()});
+//            if (!cursor.moveToFirst()) {
+//                throw new DatabaseException();
+//            }
+//            return getEntityFromCursor(cursor);
+        } finally {
+            database.endTransaction();
+        }
     }
 }

@@ -34,6 +34,10 @@
             android:screenOrientation="landscape"></activity>
         <activity android:name=".view.IssueDetail"
             android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".view.ActiveSprintActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

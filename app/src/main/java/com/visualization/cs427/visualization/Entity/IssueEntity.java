@@ -1,5 +1,7 @@
 package com.visualization.cs427.visualization.Entity;
 
+import com.visualization.cs427.visualization.R;
+
 /**
  * Created by Toan on 9/1/2016.
  */
@@ -8,13 +10,14 @@ public class IssueEntity extends Entity {
     public static final int TYPE_STORY = 1;
     public static final int TYPE_TASK = 2;
     public static final int TYPE_BUG = 3;
+    public static final int STATUS_TODO = 0;
     public static final int STATUS_CODING = 1;
     public static final int STATUS_REVIEWING = 2;
     public static final int STATUS_TESTING = 3;
     public static final int STATUS_DONE = 4;
-    public static int LOCATION_BACKLOG = 1;
-    public static int LOCATION_SPRINT = 2;
-    public static int LOCATION_DONE = 3;
+    public static final int LOCATION_BACKLOG = 1;
+    public static final int LOCATION_SPRINT = 2;
+    public static final int LOCATION_DONE = 3;
 
     private int type;
     private String summary;
@@ -45,6 +48,15 @@ public class IssueEntity extends Entity {
     public boolean equals(Object obj) {
         IssueEntity entity = (IssueEntity) obj;
         return this.getId().equals(entity.getId());
+    }
+
+    public IssueEntity(String id, String name) {
+        super(id, name);
+    }
+
+    public IssueEntity(String id, String name, int point) {
+        super(id, name);
+        this.point = point;
     }
 
     public int getType() {
@@ -110,7 +122,18 @@ public class IssueEntity extends Entity {
     public void setEpic(EpicEntity epic) {
         this.epic = epic;
     }
-
+    
+    public Integer getColorIDfromType() {
+        switch (type) {
+            case TYPE_STORY:
+                return R.color.yellow;
+            case TYPE_TASK:
+                return R.color.blue;
+            case TYPE_BUG:
+                return R.color.red;
+        }
+        return null;
+    }
     public String getStringType() {
         switch (type){
             case IssueEntity.TYPE_BUG:
