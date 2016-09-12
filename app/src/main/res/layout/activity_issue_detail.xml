@@ -20,19 +20,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            android:id="@+id/txtNumIssues2"/>
-        />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Issue Detail"
-            android:textSize="30dp"
+            android:id="@+id/txtTitle"
+            android:textSize="@dimen/text_size_title"
+            android:gravity="center_horizontal"
             android:textColor="#0091ff"
             />
     </LinearLayout>
@@ -46,18 +38,20 @@
             android:layout_height="wrap_content"
             android:textColor="#0091ff"
             android:text="Details"
-            android:textSize="25dp"/>
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Type:"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="100dp"
@@ -76,12 +70,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Story Points:"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="47dp"
@@ -94,19 +89,20 @@
             android:layout_height="wrap_content"
             android:id="@+id/TextViewStoryPoints"
             android:text="3"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Assignee:"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="67dp"
@@ -119,7 +115,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/TextViewAssignee"
             android:text="Tri Quach"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
 
 
     </LinearLayout>
@@ -127,12 +123,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Status:"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="88dp"
@@ -145,7 +142,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/TextViewStatus"
             android:text="Coding"
-            android:textSize="17dp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"
+            android:textSize="@dimen/text_size_normal"
             android:textColor="#FFFFFF"
             android:background="@drawable/square_7"/>
     </LinearLayout>
@@ -153,13 +152,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Epic Link:"
-            android:textSize="17dp"/>
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="70dp"
@@ -172,20 +171,25 @@
             android:layout_height="wrap_content"
             android:id="@+id/TextViewEpicLink"
             android:text="Epic Name"
-            android:textSize="17dp"
+            android:textSize="@dimen/text_size_normal"
             android:textColor="#FFFFFF"
-            android:background="@drawable/square_4"/>
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description:"
-            android:textSize="25dp"
+            android:layout_marginTop="5sp"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
             android:textColor="#0091ff"/>
     </LinearLayout>
 
@@ -193,74 +197,74 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/EditTextDescription"
+            android:id="@+id/txtDescription"
+            android:textSize="@dimen/text_size_normal"
             />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10sp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Time log:"
-            android:textSize="25dp"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
             android:textColor="#0091ff"/>
     </LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10sp">
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Coding"
-        android:textSize="18dp"
-        android:textColor="#0091ff"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="110dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
+            android:layout_weight="1"
+            android:text="Coding"
+            android:id="@+id/txtCoding"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_normal"
+            android:gravity="left|start"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Review"
-            android:textSize="18dp"
-            android:textColor="#0091ff"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="110dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
+            android:layout_weight="1"
+            android:text="Reviewing"
+            android:id="@+id/txtReviewing"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Verify"
-            android:textSize="18dp"
-            android:textColor="#0091ff"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="110dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
+            android:layout_weight="1"
+            android:text="Testing"
+            android:id="@+id/txtTesting"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:gravity="right|end"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Done"
-            android:textSize="18dp"
-            android:textColor="#0091ff"/>
+            android:id="@+id/txtDone"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="bold"
+            android:gravity="right|end"
 
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -268,7 +272,7 @@
         android:layout_height="3dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginRight="20dp"
         android:background="#0091ff"
         android:orientation="horizontal">
 
@@ -279,41 +283,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5sp">
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginRight="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag" />
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="1h"
+            android:textStyle="bold"
+            android:id="@+id/txtCtoR"
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="3h"
-            android:textSize="17dp"/>
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="1h"
+            android:id="@+id/txtRtoT"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_normal"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginRight="160dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1d"
-            android:textSize="17dp"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginRight="130dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2h"
-            android:textSize="17dp"/>
+            android:layout_weight="1"
+            android:id="@+id/txtTtoD"
+            android:gravity="center_horizontal"
+            android:text="1h"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_normal"/>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>

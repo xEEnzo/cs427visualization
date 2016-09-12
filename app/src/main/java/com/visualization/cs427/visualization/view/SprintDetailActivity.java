@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SprintDetailActivity extends AppCompatActivity implements View.OnClickListener, View.OnDragListener, View.OnLongClickListener {
+    public static final String ISSUE_POSITION = "issue_position";
     private TextView txtSprint, txtCreateissue, txtProjectName, txtActiveSprint;
     private LinearLayout layoutSprint, layoutBacklog, layoutAll;
     private List<IssueEntity> issueEntities = new ArrayList<>();
@@ -279,19 +280,19 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.txtCreateIssue )
+        int id = v.getId();
+        if (id == R.id.txtCreateIssue )
         {
             Intent intent = new Intent(this,CreateIssueActivity.class);
             startActivity(intent);
         }
 
         else
-        {
-        //    viewListBacklogtemp = new ArrayList<>();
-            int index = CurrentProject.getInstance().getIssueEntities().indexOf(v);
-
+        {   String issueId = (String) v.getTag(R.string.issue_id);
+            IssueEntity issueEntity = new IssueEntity(issueId);
+            int index = CurrentProject.getInstance().getIssueEntities().indexOf(issueEntity);
             Intent intent = new Intent(this,IssueDetail.class);
-            intent.putExtra("index",index);
+            intent.putExtra(ISSUE_POSITION,index);
             startActivity(intent);
         }
     }
