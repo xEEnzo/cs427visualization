@@ -15,17 +15,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            android:id="@+id/txtNumIssues2"/>
-        />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:text="Add new epic"
             android:textSize="30dp"
             android:textColor="#0091ff"
@@ -40,7 +32,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Epic Name"/>
+            android:text="Epic Name"
+            android:textSize="@dimen/text_size_normal"/>
 
         <TextView
             android:layout_width="0dp"
@@ -70,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:textSize="@dimen/text_size_normal"
             android:text="Epic Color"/>
         <TextView
             android:layout_width="0dp"
@@ -78,11 +72,14 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_1"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/squares"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/squares">
+        </LinearLayout>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="10dp"
@@ -90,11 +87,13 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_2"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/square_2"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/square_2"></LinearLayout>
         <TextView
             android:layout_width="0dp"
             android:layout_marginLeft="10dp"
@@ -102,10 +101,12 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_3"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:background="@drawable/square_3"/>
         <TextView
             android:layout_width="0dp"
@@ -114,10 +115,12 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_4"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:background="@drawable/square_4"/>
         <TextView
             android:layout_width="0dp"
@@ -126,10 +129,12 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_5"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:background="@drawable/square_5"/>
         <TextView
             android:layout_width="0dp"
@@ -138,10 +143,12 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_6"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:background="@drawable/square_6"/>
         <TextView
             android:layout_width="0dp"
@@ -150,33 +157,29 @@
             android:visibility="invisible"
             android:background="@drawable/grey_tag"
             />
-        <View
+        <LinearLayout
             android:id="@+id/square_7"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:background="@drawable/square_7"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="250dp"
-            android:visibility="invisible"
-            />
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:gravity="right|end|bottom">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/Add"
-            android:layout_marginLeft="0dp"
             android:text="Add"
             android:onClick="Add"
-            android:textColor="#0091ff"
-            android:background="@drawable/border_button"/>
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"/>
         />
         <Button
             android:layout_width="wrap_content"

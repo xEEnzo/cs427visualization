@@ -9,6 +9,7 @@ import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.Mapping.TimeLogColumn;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class TimeLogDatabaseHelper extends DatabaseHelper {
         }
         return cursor.getString(cursor.getColumnIndex(TimeLogColumn.SPENT_TIME.getColumnName()));
     }
+
 
     public Timestamp getTimeAssigned(IssueEntity issueEntity, int status) throws DatabaseException {
         String query = "SELECT * FROM " + TimeLogColumn.TABLE_NAME + " WHERE " + TimeLogColumn.ISSUE_ID.getColumnName() + " = ? and "

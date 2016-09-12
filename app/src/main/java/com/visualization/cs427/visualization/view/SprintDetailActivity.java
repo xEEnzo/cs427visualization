@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 
+import com.visualization.cs427.visualization.DAL.EpicDAL;
 import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
@@ -55,8 +56,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     private boolean emptyLayoutInSprint = false;
     private boolean isChangeBackToLog = false;
     private View.OnLongClickListener sprintIssueLongCLick;
-
-
+    public static final int REQUEST_CODE = 100;
+    public static final int RESULT_OK_NEW_ISSUE = 200;
+    public static final int RESULT_CANCEL = 300;
     private boolean rightDrop = false;
     private String projectID;
     private String projectName;
@@ -95,6 +97,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         try {
             issueEntities.addAll(IssueDAL.getInstance().getIssuebyProject(this,projectID));
             CurrentProject.getInstance().setIssueEntities(issueEntities);
+            CurrentProject.getInstance().setEpicEntities(EpicDAL.getInstance().getAllbyProjectID(this, CurrentProject.getInstance().getProjectEntity()));
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
@@ -186,6 +189,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void createBackLog() {
+        if (layoutBacklog.getChildCount() != 0){
+            layoutBacklog.removeAllViews();
+        }
         viewListBacklog = new ArrayList<>();
         List<IssueEntity> baclLogIssues = DataUtils.getIssueInBackLog(issueEntities);
         for (int i = 0; i < baclLogIssues.size(); ++i) {
@@ -211,6 +217,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             view.setOnLongClickListener(sprintIssueLongCLick);
             viewListSprint.add(view);
             view.setOnDragListener(this);
+            view.setOnClickListener(this);
             layoutSprint.addView(view);
         }
         if (sprintIssues.size() != 0){
@@ -223,13 +230,6 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void initDummyData() {
-        for (int i = 0; i < 10; ++i) {
-            String name = "Issue" + i;
-            IssueEntity entity = new IssueEntity(String.valueOf(i), name, i % 3, null, 0, null, -1, -1, null, null);
-            issueEntities.add(entity);
-        }
-    }
 
     private View createIssueView(IssueEntity issueEntity) {
         View root = inflater.inflate(R.layout.issue_layout_view, null);
@@ -249,6 +249,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             String [] names = name.split(" ");
             holder.txtContributor.setText(names[names.length-1]);
             holder.txtContributor.setBackgroundResource(R.drawable.grey_tag);
+        }
+        else{
+            holder.txtContributor.setVisibility(View.GONE);
         }
         if (issueEntity.getPoint() != -1){
             holder.txtPoint.setText(issueEntity.getPoint()+"");
@@ -284,9 +287,11 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         if (id == R.id.txtCreateIssue )
         {
             Intent intent = new Intent(this,CreateIssueActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
         }
-
+        else if (id == R.id.txtActiveSprint){
+            startActivity(new Intent(SprintDetailActivity.this, ActiveSprintActivity.class));
+        }
         else
         {   String issueId = (String) v.getTag(R.string.issue_id);
             IssueEntity issueEntity = new IssueEntity(issueId);
@@ -555,9 +560,11 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         if (size == 0){
             txtNumIssues.setVisibility(View.INVISIBLE);
             txtActiveSprint.setVisibility(View.INVISIBLE);
+            txtActiveSprint.setOnClickListener(null);
             return;
         }
         txtActiveSprint.setVisibility(View.VISIBLE);
+        txtActiveSprint.setOnClickListener(this);
         txtNumIssues.setVisibility(View.VISIBLE);
         if (size == 1){
             txtNumIssues.setText(size + " issue");
@@ -613,5 +620,18 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         screenHeight = displaymetrics.heightPixels;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE){
+            if (resultCode == RESULT_OK_NEW_ISSUE){
+                if (!issueEntities.isEmpty()){
+                    issueEntities.clear();
+                }
+                issueEntities.addAll(CurrentProject.getInstance().getIssueEntities());
+                createBackLog();
+            }
+        }
     }
 }

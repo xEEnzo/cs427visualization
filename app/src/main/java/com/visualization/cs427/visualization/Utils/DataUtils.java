@@ -1,6 +1,7 @@
 package com.visualization.cs427.visualization.Utils;
 
 import android.content.Context;
+import com.visualization.cs427.visualization.Entity.ContributorEntity;
 
 import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
@@ -44,7 +45,17 @@ public class DataUtils {
         return entities;
     }
 
-    public static List<IssueEntity> orderIssueByTimeLog(Context context, List<IssueEntity> issueEntities) throws DatabaseException {
+    public static List<ContributorEntity> getAllContributors (List<IssueEntity> issueEntities) {
+        List<ContributorEntity> contributorEntities = new ArrayList<>();
+        for (IssueEntity entity : issueEntities) {
+            if (!contributorEntities.contains(entity.getAssignee())) {
+                contributorEntities.add(entity.getAssignee());
+            }
+        }
+        return  contributorEntities;
+    }
+
+    public static List<IssueEntity> orderIssueByTimeLog (Context context, List<IssueEntity> issueEntities) throws DatabaseException {
         List<Timestamp> timestampList = new ArrayList<>();
         for (IssueEntity entity : issueEntities) {
             timestampList.add(IssueDAL.getInstance().getTimeAssigned(context, entity, entity.getProcessStatus()));
