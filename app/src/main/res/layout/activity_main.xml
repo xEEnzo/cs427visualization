@@ -1,51 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerHorizontal="true"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:padding="40sp"
     tools:context="com.visualization.cs427.visualization.view.MainActivity">
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="73dp"
         android:gravity="center"
-        android:text="JIRA VISUALIZATION"
-        android:textColor="#0091ff" />
+        android:textSize="60sp"
+        android:text="Project Planning Visualization"
+        android:textColor="#0091ff"
+        android:textStyle="bold"
+        android:layout_marginTop="100sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/create"
+            android:layout_width="230sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="45dp"
+            android:background="@color/colorPrimary"
+            android:onClick="CreateButton"
+            android:textSize="@dimen/text_size_normal"
+            android:layout_gravity="center"
+            android:text="Create new project"
+            android:textColor="@color/white" />
 
-    <Button
-        android:id="@+id/create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/open"
-        android:layout_alignLeft="@+id/open"
-        android:layout_alignRight="@+id/open"
-        android:layout_alignStart="@+id/open"
-        android:layout_below="@+id/title"
-        android:layout_marginTop="45dp"
-        android:background="@drawable/border_button"
-        android:onClick="CreateButton"
-        android:text="Create new project"
-        android:textColor="#0091ff" />
+        <Button
+            android:id="@+id/open"
+            android:layout_width="230sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/border_button"
+            android:onClick="OpenButton"
+            android:textSize="@dimen/text_size_normal"
+            android:layout_marginTop="20sp"
+            android:text="Open existing project"
 
-    <Button
-        android:id="@+id/open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/border_button"
-        android:onClick="OpenButton"
-        android:text="Open existing project"
-
-        android:textColor="#0091ff" />
-</RelativeLayout>
+            android:textColor="#0091ff" />
+    </LinearLayout>
+</LinearLayout>

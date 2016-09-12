@@ -13,9 +13,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
+import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.R;
 import com.visualization.cs427.visualization.Utils.CurrentProject;
 import com.visualization.cs427.visualization.Utils.DataUtils;
@@ -27,13 +29,20 @@ import java.util.List;
 public class CreateIssueActivity extends AppCompatActivity {
     public void Create(View view)
     {
-        setContentView(R.layout.activity_sprint_detail);
+        IssueEntity entity = getNewIssue();
+        try {
+            CurrentProject.getInstance().setIssueEntities(IssueDAL.getInstance().createNewIssue(this, entity, CurrentProject.getInstance().getProjectEntity()));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        setResult(SprintDetailActivity.RESULT_OK_NEW_ISSUE);
+        finish();
 
     }
     public void Cancle(View view)
-
     {
-        setContentView(R.layout.activity_sprint_detail);
+        setResult(SprintDetailActivity.RESULT_CANCEL);
+        finish();
     }
     public void AddEpic(View view)
     {
@@ -46,7 +55,6 @@ public class CreateIssueActivity extends AppCompatActivity {
     private Button Create,Cancle;
     private ImageView ImageAddEpic;
     private EditText editTextSummary,editTextStoryPoints,editTextDescription;
-    private String textspinnerIssueType,textSummary,textStoryPoints,textAssignee,textEpic,textLinkedIssue,textIssue,textDescription;
     private List<EpicEntity> epicEntities = new ArrayList<>();
     private List<ContributorEntity> contributorEntities = new ArrayList<>();
     public static final int REQUEST_CODE_ADD_EPIC = 100;
@@ -73,7 +81,7 @@ public class CreateIssueActivity extends AppCompatActivity {
         editTextDescription = (EditText) findViewById(R.id.editTextDescription);
         editTextStoryPoints = (EditText) findViewById(R.id.editTextStoryPoints);
 
-        String[] items = new String[]{"Story", "Bug", "Task"};
+        String[] items = new String[]{"Story", "Task", "Bug"};
         ArrayAdapter<String> adapterIssiueType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
         spinnerIssueType.setAdapter(adapterIssiueType);
 
@@ -84,19 +92,33 @@ public class CreateIssueActivity extends AppCompatActivity {
         setUpEpicSpinner();
         setUpAssigneeSpinner();
         setUpIssueLinkSpinner();
+    }
 
-
-        /*----------------------------------Get content of user input ----------------------------*/
-        textspinnerIssueType = spinnerIssueType.getSelectedItem().toString();
-        textSummary = editTextSummary.getText().toString();
-        textStoryPoints = editTextStoryPoints.getText().toString();
-        textAssignee = spinnerAssignee.getSelectedItem().toString();
-        textEpic = spinnerEpic.getSelectedItem().toString();
-        textLinkedIssue = spinnerLinkedIssue.getSelectedItem().toString();
-        textIssue = spinnerIssue.getSelectedItem().toString();
-        textDescription = editTextDescription.getText().toString();
-        /*----------------------------------Get content of user input ----------------------------*/
-
+    private IssueEntity getNewIssue (){
+        int issueType = spinnerIssueType.getSelectedItemPosition() +1 ;
+        String textSummary = editTextSummary.getText().toString();
+        int point = Integer.parseInt(editTextStoryPoints.getText().toString());
+        ContributorEntity contributorEntity = null;
+        if (spinnerAssignee.getSelectedItemPosition() !=0) {
+            contributorEntity = contributorEntities.get(spinnerAssignee.getSelectedItemPosition());
+        }
+        EpicEntity epicEntity = CurrentProject.getInstance().getEpicEntities().get(spinnerEpic.getSelectedItemPosition());
+        IssueEntity link = CurrentProject.getInstance().getIssueEntities().get(spinnerIssue.getSelectedItemPosition()-1);
+        String description = editTextDescription.getText().toString();
+        IssueEntity entity = new IssueEntity(null, textSummary, issueType, point, description, IssueEntity.STATUS_TODO, IssueEntity.LOCATION_BACKLOG, contributorEntity, epicEntity);
+        int selectedIssueLink = spinnerIssue.getSelectedItemPosition();
+        if (selectedIssueLink == 0){
+            return entity;
+        }
+        List<IssueEntity> list = new ArrayList<>();
+        list.add(link);
+        if (spinnerLinkedIssue.getSelectedItemPosition() == 0){
+            entity.setBlocked(list);
+        }
+        else{
+            entity.setBlocked(list);
+        }
+        return entity;
     }
 
     @Override
@@ -127,9 +149,10 @@ public class CreateIssueActivity extends AppCompatActivity {
         if (!contributorEntities.isEmpty()){
             contributorEntities.clear();
         }
-        int count = 0;
+        int count = 1;
         contributorEntities = DataUtils.getAllContributors(CurrentProject.getInstance().getIssueEntities());
-        String [] contributorNames = new String[contributorEntities.size()];
+        String [] contributorNames = new String[contributorEntities.size() + 1];
+        contributorNames [0] = "";
         for (ContributorEntity contributorEntity : contributorEntities){
             contributorNames[count] = contributorEntity.getName();
             ++count;
@@ -139,9 +162,10 @@ public class CreateIssueActivity extends AppCompatActivity {
     }
 
     private void setUpIssueLinkSpinner(){
-        int count = 0;
+        int count = 1;
         List<IssueEntity> issueEntities = CurrentProject.getInstance().getIssueEntities();
-        String[] issueNames = new String[issueEntities.size()];
+        String[] issueNames = new String[issueEntities.size()+1];
+        issueNames[0] = "";
         for (IssueEntity issueEntity : issueEntities){
             issueNames[count] = issueEntity.getName();
             ++count;

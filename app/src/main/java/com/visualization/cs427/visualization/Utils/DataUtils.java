@@ -45,14 +45,17 @@ public class DataUtils {
         return entities;
     }
 
-    public static List<ContributorEntity> getAllContributors (List<IssueEntity> issueEntities){
+    public static List<ContributorEntity> getAllContributors (List<IssueEntity> issueEntities) {
         List<ContributorEntity> contributorEntities = new ArrayList<>();
-        for (IssueEntity entity : issueEntities){
+        for (IssueEntity entity : issueEntities) {
             if (!contributorEntities.contains(entity.getAssignee())) {
                 contributorEntities.add(entity.getAssignee());
             }
+        }
+        return  contributorEntities;
     }
-    public static List<IssueEntity> orderIssueByTimeLog(Context context, List<IssueEntity> issueEntities) throws DatabaseException {
+
+    public static List<IssueEntity> orderIssueByTimeLog (Context context, List<IssueEntity> issueEntities) throws DatabaseException {
         List<Timestamp> timestampList = new ArrayList<>();
         for (IssueEntity entity : issueEntities) {
             timestampList.add(IssueDAL.getInstance().getTimeAssigned(context, entity, entity.getProcessStatus()));

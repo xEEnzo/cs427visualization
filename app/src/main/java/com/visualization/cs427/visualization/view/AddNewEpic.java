@@ -23,9 +23,9 @@ public class AddNewEpic extends AppCompatActivity implements View.OnClickListene
     LinearLayout previouSelected = null;
     public void Add(View view)
     {
-        EpicEntity epicEntity = new EpicEntity(null, editTextAddEpic.getText().toString(), getColorString(selectedColorId));
+        EpicEntity epicEntity = new EpicEntity(null, editTextAddEpic.getText().toString(), getColorString(selectedColorId), CurrentProject.getInstance().getProjectEntity());
         try {
-            CurrentProject.getInstance().setEpicEntities(EpicDAL.getInstance().insertNewEpic(this,epicEntity,CurrentProject.getInstance().getProjectEntity().getId()));
+            CurrentProject.getInstance().setEpicEntities(EpicDAL.getInstance().insertNewEpic(this,epicEntity));
         } catch (DatabaseException e) {
             e.printStackTrace();
         }

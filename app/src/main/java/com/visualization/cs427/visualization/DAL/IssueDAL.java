@@ -6,6 +6,7 @@ import com.visualization.cs427.visualization.DatabaseHelper.IssueDatabaseHelper;
 import com.visualization.cs427.visualization.DatabaseHelper.TimeLogDatabaseHelper;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
+import com.visualization.cs427.visualization.Entity.ProjectEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 
 import java.sql.Timestamp;
@@ -65,6 +66,18 @@ public class IssueDAL {
         try {
             dbh = new TimeLogDatabaseHelper(context);
             return dbh.getTimeSpent(issueEntity, status);
+        } finally {
+            if (dbh != null) {
+                dbh.closeConnection();
+            }
+        }
+    }
+
+    public List<IssueEntity> createNewIssue (Context context, IssueEntity issueEntity, ProjectEntity projectEntity) throws DatabaseException {
+        IssueDatabaseHelper dbh = null;
+        try {
+            dbh = new IssueDatabaseHelper(context);
+            return dbh.createNewIssue(issueEntity, projectEntity);
         } finally {
             if (dbh != null) {
                 dbh.closeConnection();

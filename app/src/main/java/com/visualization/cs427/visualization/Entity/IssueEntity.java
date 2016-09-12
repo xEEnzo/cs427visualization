@@ -22,7 +22,6 @@ public class IssueEntity extends Entity {
     public static final int LOCATION_DONE = 3;
 
     private int type;
-    private String summary;
     private int point;
     private String description;
     private int processStatus;
@@ -35,10 +34,9 @@ public class IssueEntity extends Entity {
         super(id, null);
     }
 
-    public IssueEntity(String id, String name, int type, String summary, int point, String description, int processStatus, int locationStatus, ContributorEntity assignee, EpicEntity epic) {
+    public IssueEntity(String id, String name, int type, int point, String description, int processStatus, int locationStatus, ContributorEntity assignee, EpicEntity epic) {
         super(id, name);
         this.type = type;
-        this.summary = summary;
         this.point = point;
         this.description = description;
         this.processStatus = processStatus;
@@ -68,14 +66,6 @@ public class IssueEntity extends Entity {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
     }
 
     public int getPoint() {
@@ -152,6 +142,8 @@ public class IssueEntity extends Entity {
 
     public String getStringStatus(){
         switch (processStatus){
+            case IssueEntity.STATUS_TODO:
+                return "Todo";
             case IssueEntity.STATUS_CODING:
                 return "Coding";
             case IssueEntity.STATUS_REVIEWING:

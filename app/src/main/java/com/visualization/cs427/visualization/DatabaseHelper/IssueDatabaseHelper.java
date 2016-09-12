@@ -9,6 +9,7 @@ import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.Entity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
+import com.visualization.cs427.visualization.Entity.ProjectEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.Mapping.IssueBlockColumn;
 import com.visualization.cs427.visualization.Mapping.IssueColumn;
@@ -62,7 +63,7 @@ public class IssueDatabaseHelper extends DatabaseHelper {
             queryBlocker.append("SELECT * FROM " + IssueBlockColumn.TABLE_NAME + " left join " + IssueColumn.TABLE_NAME);
             queryBlocker.append(" on " + IssueBlockColumn.ISSUE_BLOCKER.getColumnName() + " = " + IssueColumn.ISSUE_ID.getColumnName());
             queryBlocker.append(" WHERE " + IssueBlockColumn.ISSUE_BLOCKED.getColumnName() + " = ?");
-            Cursor cursorBlocker = database.rawQuery(queryBlocked.toString(), new String[]{issueEntity.getId()});
+            Cursor cursorBlocker = database.rawQuery(queryBlocker.toString(), new String[]{issueEntity.getId()});
             List<IssueEntity> blocker = new ArrayList<>();
             if (!cursorBlocker.moveToFirst()) {
                 issueEntity.setBlocker(blocker);
@@ -94,10 +95,82 @@ public class IssueDatabaseHelper extends DatabaseHelper {
 
     }
 
+    public void insertNewIssue (IssueEntity issueEntity, ProjectEntity projectEntity) throws DatabaseException {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(IssueColumn.ISSUE_NAME.getColumnName(), issueEntity.getName());
+        contentValues.put(IssueColumn.ISSUE_TYPE.getColumnName(), issueEntity.getType());
+        contentValues.put(IssueColumn.ISSUE_POINT.getColumnName(), issueEntity.getPoint());
+        contentValues.put(IssueColumn.ISSUE_DESCRIPTION.getColumnName(), issueEntity.getDescription());
+        if (issueEntity.getAssignee() != null) {
+            contentValues.put(IssueColumn.ISSUE_ASSIGNEE.getColumnName(), issueEntity.getAssignee().getId());
+        }
+        contentValues.put(IssueColumn.ISSUE_EPIC.getColumnName(), issueEntity.getEpic().getId());
+        contentValues.put(IssueColumn.ISSUE_PROCESS_STATUS.getColumnName(), issueEntity.getProcessStatus());
+        contentValues.put(IssueColumn.ISSUE_LOCATION_STATUS.getColumnName(), issueEntity.getLocationStatus());
+        contentValues.put(IssueColumn.ISSUE_PROJECT.getColumnName(), projectEntity.getId());
+        try {
+            database.beginTransaction();
+            long id = database.insert(IssueColumn.TABLE_NAME, IssueColumn.ISSUE_ASSIGNEE.getColumnName(), contentValues);
+            if (id == -1) {
+                throw new DatabaseException();
+            }
+            issueEntity.setId(String.valueOf(id));
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+        insertToIssueBlock(issueEntity);
+    }
+
+    public void insertToIssueBlock(IssueEntity issueEntity) throws DatabaseException {
+        if (issueEntity.getBlocked() != null){
+            List<IssueEntity> blocked = issueEntity.getBlocked();
+            for (IssueEntity entity : blocked){
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(IssueBlockColumn.ISSUE_BLOCKER.getColumnName(), entity.getId());
+                contentValues.put(IssueBlockColumn.ISSUE_BLOCKED.getColumnName(), issueEntity.getId());
+                try {
+                    database.beginTransaction();
+                    long id = database.insert(IssueBlockColumn.TABLE_NAME, null, contentValues);
+                    if (id == -1) {
+                        throw new DatabaseException();
+                    }
+                    database.setTransactionSuccessful();
+                } finally {
+                    database.endTransaction();
+                }
+            }
+        }
+        if (issueEntity.getBlocker()!= null){
+            List<IssueEntity> blocker = issueEntity.getBlocked();
+            for (IssueEntity entity : blocker){
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(IssueBlockColumn.ISSUE_BLOCKER.getColumnName(), issueEntity.getId());
+                contentValues.put(IssueBlockColumn.ISSUE_BLOCKED.getColumnName(), entity.getId());
+                try {
+                    database.beginTransaction();
+                    long id = database.insert(IssueBlockColumn.TABLE_NAME, null, contentValues);
+                    if (id == -1) {
+                        throw new DatabaseException();
+                    }
+                    database.setTransactionSuccessful();
+                } finally {
+                    database.endTransaction();
+                }
+            }
+        }
+    }
+
     public List<IssueEntity> updateIssueLocation(IssueEntity entity, String projectID) throws DatabaseException {
         updateLocationOfIssue(entity);
         return getIssueByProjectID(projectID);
     }
+
+    public List<IssueEntity> createNewIssue(IssueEntity entity, ProjectEntity projectEntity) throws DatabaseException {
+        insertNewIssue(entity, projectEntity);
+        return getIssueByProjectID(projectEntity.getId());
+    }
+
 
 
     @Override
@@ -109,10 +182,14 @@ public class IssueDatabaseHelper extends DatabaseHelper {
         try {
             epicDatabaseHelper = new EpicDatabaseHelper(context);
             contributorDatabaseHelper = new ContributorDatabaseHelper(context);
-            String contributorID = String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_ASSIGNEE.getColumnName())));
+            if (!cursor.isNull(cursor.getColumnIndex(IssueColumn.ISSUE_ASSIGNEE.getColumnName()))) {
+                String contributorID = String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_ASSIGNEE.getColumnName())));
+                assignee = contributorDatabaseHelper.getbyID(contributorID);
+            }
             String epicID = String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_EPIC.getColumnName())));
-            epic = epicDatabaseHelper.getbyID(epicID);
-            assignee = contributorDatabaseHelper.getbyID(contributorID);
+            if (epicID != null) {
+                epic = epicDatabaseHelper.getbyID(epicID);
+            }
         } finally {
             epicDatabaseHelper.closeConnection();
             contributorDatabaseHelper.closeConnection();
@@ -121,7 +198,6 @@ public class IssueDatabaseHelper extends DatabaseHelper {
         return new IssueEntity(String.valueOf(cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_ID.getColumnName()))),
                 cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_NAME.getColumnName())),
                 cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_TYPE.getColumnName())),
-                cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_SUMMARY.getColumnName())),
                 cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_POINT.getColumnName())),
                 cursor.getString(cursor.getColumnIndex(IssueColumn.ISSUE_DESCRIPTION.getColumnName())),
                 cursor.getInt(cursor.getColumnIndex(IssueColumn.ISSUE_PROCESS_STATUS.getColumnName())),
