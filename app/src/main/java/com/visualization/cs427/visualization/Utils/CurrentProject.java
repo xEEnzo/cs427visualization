@@ -1,5 +1,6 @@
 package com.visualization.cs427.visualization.Utils;
 
+import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
 import com.visualization.cs427.visualization.Entity.ProjectEntity;
 
@@ -11,6 +12,16 @@ import java.util.List;
 public class CurrentProject {
     private static  CurrentProject _instance;
     private List<IssueEntity> issueEntities;
+    private List<EpicEntity> epicEntities;
+
+    public List<EpicEntity> getEpicEntities() {
+        return epicEntities;
+    }
+
+    public void setEpicEntities(List<EpicEntity> epicEntities) {
+        this.epicEntities = epicEntities;
+    }
+
     private ProjectEntity projectEntity;
     public static CurrentProject getInstance() {
         if (_instance == null) {
