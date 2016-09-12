@@ -8,10 +8,10 @@ public class IssueEntity extends Entity {
     public static final int TYPE_STORY = 1;
     public static final int TYPE_TASK = 2;
     public static final int TYPE_BUG = 3;
-    public static int STATUS_CODING = 1;
-    public static int STATUS_REVIEWING = 2;
-    public static int STATUS_TESTING = 3;
-    public static int STATUS_DONE = 4;
+    public static final int STATUS_CODING = 1;
+    public static final int STATUS_REVIEWING = 2;
+    public static final int STATUS_TESTING = 3;
+    public static final int STATUS_DONE = 4;
     public static int LOCATION_BACKLOG = 1;
     public static int LOCATION_SPRINT = 2;
     public static int LOCATION_DONE = 3;
@@ -24,6 +24,10 @@ public class IssueEntity extends Entity {
     private int locationStatus;
     private ContributorEntity assignee;
     private EpicEntity epic;
+
+    public IssueEntity (String id) {
+        super(id, null);
+    }
 
     public IssueEntity(String id, String name, int type, String summary, int point, String description, int processStatus, int locationStatus, ContributorEntity assignee, EpicEntity epic) {
         super(id, name);
@@ -105,5 +109,33 @@ public class IssueEntity extends Entity {
 
     public void setEpic(EpicEntity epic) {
         this.epic = epic;
+    }
+
+    public String getStringType() {
+        switch (type){
+            case IssueEntity.TYPE_BUG:
+                return "Bug";
+            case IssueEntity.TYPE_STORY:
+                return "Story";
+            case IssueEntity.TYPE_TASK:
+                return "Task";
+            default:
+                return "";
+        }
+    }
+
+    public String getStringStatus(){
+        switch (processStatus){
+            case IssueEntity.STATUS_CODING:
+                return "Coding";
+            case IssueEntity.STATUS_REVIEWING:
+                return "Reviewing";
+            case IssueEntity.STATUS_TESTING:
+                return "Testing";
+            case IssueEntity.STATUS_DONE:
+                return "Done";
+            default:
+                return "";
+        }
     }
 }
