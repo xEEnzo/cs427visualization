@@ -3,7 +3,6 @@ package com.visualization.cs427.visualization.DatabaseHelper;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.visualization.cs427.visualization.Entity.Entity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.Mapping.EpicColumn;

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.visualization.cs427.visualization.view.ActiveSprintActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5sp"
+        android:text="@string/backlog"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:id="@+id/tvBacklog"/>
+
+    <LinearLayout
+        android:id="@+id/layoutContributorPoint"
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:orientation="horizontal"></LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/layoutContributorIssue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="130sp">
+
+        <LinearLayout
+            android:id="@+id/layoutIssue"
+            android:layout_width="match_parent"
+            android:layout_height="130sp"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+</LinearLayout>
