@@ -57,6 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="3sp"
+                    android:textSize="@dimen/text_size_normal"
                     android:visibility="invisible"
                     android:background="@drawable/grey_tag"
                     android:id="@+id/txtNumIssues"/>
@@ -64,6 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="3sp"
+                    android:textSize="@dimen/text_size_normal"
                     android:visibility="invisible"
                     android:background="@drawable/grey_tag"
                     android:layout_marginLeft="8sp"

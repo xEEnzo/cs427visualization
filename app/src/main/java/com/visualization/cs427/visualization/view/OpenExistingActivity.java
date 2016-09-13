@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import com.visualization.cs427.visualization.Adapter.ProjectAdapter;
 import com.visualization.cs427.visualization.DAL.ProjectDAL;
 import com.visualization.cs427.visualization.Entity.ProjectEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class OpenExistingActivity extends AppCompatActivity {
     private ListView mainListView ;
-    private ArrayAdapter<String> listAdapter ;
+    private ProjectAdapter listAdapter ;
     private List<ProjectEntity> projectEntities;
     private List<String> listProjectName;
     public static final String PROJECT_ID = "project_id";
@@ -32,10 +33,10 @@ public class OpenExistingActivity extends AppCompatActivity {
         mainListView = (ListView) findViewById( R.id.listView );
         listProjectName = new ArrayList<>();
         getAllExistingProject();
-        for (ProjectEntity projectEntity : projectEntities){
-            listProjectName.add(projectEntity.getName());
-        }
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listProjectName);
+        List<Integer> projectIcons = new ArrayList<>();
+        projectIcons.add(R.mipmap.ic_launcher);
+        projectIcons.add(R.drawable.cura);
+        listAdapter = new ProjectAdapter(this, projectEntities, projectIcons);
         mainListView.setAdapter( listAdapter );
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

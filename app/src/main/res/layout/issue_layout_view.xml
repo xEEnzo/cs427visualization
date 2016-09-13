@@ -12,11 +12,12 @@
     >
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
         <ImageView
             android:layout_width="@dimen/size_circle"
             android:layout_height="@dimen/size_circle"
             android:id="@+id/ivIssueType"
+            android:layout_gravity="center"
             android:background="@drawable/circle_issue_story"/>
     </LinearLayout>
     <LinearLayout
@@ -41,19 +42,19 @@
             android:paddingLeft="5sp"
             android:paddingRight="5sp"
             tools:text="Epic Name"
+            android:textSize="@dimen/text_size_normal"
+            android:textColor="@color/white"
             android:id="@+id/txtEpicName"
             android:background="@color/yellow"
             android:visibility="invisible"
             />
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="L"
-        android:id="@+id/txtContributor"
-        android:gravity="center"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp"
-        android:layout_marginLeft="6sp"
+        <ImageView
+            android:layout_width="@dimen/size_profile_pic"
+            android:layout_height="@dimen/size_profile_pic"
+            android:id="@+id/txtContributor"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_normal"
+            android:layout_marginLeft="6sp"
         />
         <TextView
             android:layout_width="wrap_content"
@@ -62,6 +63,7 @@
             android:id="@+id/txtPoint"
             android:gravity="center"
             android:paddingLeft="5sp"
+            android:textSize="@dimen/text_size_normal"
             android:paddingRight="5sp"
             android:layout_marginLeft="6sp"
             />

@@ -3,7 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_size_title">30sp</dimen>
-    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_normal">20sp</dimen>
     <dimen name="default_layout_sprint_size">60sp</dimen>
     <dimen name="size_circle">20sp</dimen>
+    <dimen name="size_profile_pic">32sp</dimen>
 </resources>

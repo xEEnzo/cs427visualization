@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.visualization.cs427.visualization.Adapter.AssigneeAdapter;
+import com.visualization.cs427.visualization.Adapter.EpicAdapter;
 import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
@@ -82,11 +84,11 @@ public class CreateIssueActivity extends AppCompatActivity {
         editTextStoryPoints = (EditText) findViewById(R.id.editTextStoryPoints);
 
         String[] items = new String[]{"Story", "Task", "Bug"};
-        ArrayAdapter<String> adapterIssiueType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> adapterIssiueType = new ArrayAdapter<String>(this, R.layout.simple_list_item_custom, items);
         spinnerIssueType.setAdapter(adapterIssiueType);
 
         String[] itemsLinedIssues = new String[]{"Blocks", "Is blocked by"};
-        ArrayAdapter<String> adapterLinedIssues = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsLinedIssues);
+        ArrayAdapter<String> adapterLinedIssues = new ArrayAdapter<String>(this, R.layout.simple_list_item_custom, itemsLinedIssues);
         spinnerLinkedIssue.setAdapter(adapterLinedIssues);
 
         setUpEpicSpinner();
@@ -135,13 +137,7 @@ public class CreateIssueActivity extends AppCompatActivity {
             epicEntities.clear();
         }
         epicEntities.addAll(CurrentProject.getInstance().getEpicEntities());
-        int count = 0;
-        String [] epicNames = new String[epicEntities.size()];
-        for (EpicEntity epicEntity : epicEntities){
-            epicNames[count] = epicEntity.getName();
-            ++count;
-        }
-        ArrayAdapter<String> adapterEpic = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, epicNames);
+        EpicAdapter adapterEpic = new EpicAdapter(this, epicEntities);
         spinnerEpic.setAdapter(adapterEpic);
     }
 
@@ -149,15 +145,8 @@ public class CreateIssueActivity extends AppCompatActivity {
         if (!contributorEntities.isEmpty()){
             contributorEntities.clear();
         }
-        int count = 1;
         contributorEntities = DataUtils.getAllContributors(CurrentProject.getInstance().getIssueEntities());
-        String [] contributorNames = new String[contributorEntities.size() + 1];
-        contributorNames [0] = "";
-        for (ContributorEntity contributorEntity : contributorEntities){
-            contributorNames[count] = contributorEntity.getName();
-            ++count;
-        }
-        ArrayAdapter<String> adapterAssignee = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, contributorNames);
+        AssigneeAdapter adapterAssignee = new AssigneeAdapter(this, contributorEntities);
         spinnerAssignee.setAdapter(adapterAssignee);
     }
 

@@ -247,8 +247,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
             ContributorEntity entity = issueEntity.getAssignee();
             String name = entity.getName();
             String [] names = name.split(" ");
-            holder.txtContributor.setText(names[names.length-1]);
-            holder.txtContributor.setBackgroundResource(R.drawable.grey_tag);
+            String assigneeName = names[names.length-1].toLowerCase();
+            int id = getResources().getIdentifier(assigneeName+"_pic","drawable", getPackageName());
+            holder.txtContributor.setBackgroundResource(id);
         }
         else{
             holder.txtContributor.setVisibility(View.GONE);
@@ -586,12 +587,12 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
 
 
     private class ViewHolder {
-        private TextView txtIssueName, txtEpicName, txtContributor, txtPoint;
-        private ImageView ivIssueType;
+        private TextView txtIssueName, txtEpicName, txtPoint;
+        private ImageView ivIssueType, txtContributor;
 
         public ViewHolder(View root) {
             txtIssueName = (TextView) root.findViewById(R.id.txtIssueName);
-            txtContributor = (TextView) root.findViewById(R.id.txtContributor);
+            txtContributor = (ImageView) root.findViewById(R.id.txtContributor);
             txtEpicName = (TextView) root.findViewById(R.id.txtEpicName);
             ivIssueType = (ImageView) root.findViewById(R.id.ivIssueType);
             txtPoint = (TextView) root.findViewById(R.id.txtPoint);

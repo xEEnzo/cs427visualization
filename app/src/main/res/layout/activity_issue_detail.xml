@@ -48,22 +48,16 @@
         android:orientation="horizontal"
         android:layout_marginTop="5sp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Type:"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="100dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/TextViewType"
-
+            android:layout_weight="1"
             android:textSize="17dp"/>
     </LinearLayout>
 
@@ -73,22 +67,17 @@
         android:orientation="horizontal"
         android:layout_marginTop="5sp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Story Points:"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="47dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/TextViewStoryPoints"
             android:text="3"
+            android:layout_weight="1"
             android:textSize="@dimen/text_size_normal"/>
 
     </LinearLayout>
@@ -99,24 +88,29 @@
         android:orientation="horizontal"
         android:layout_marginTop="5sp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Assignee:"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="67dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/TextViewAssignee"
-            android:text="Tri Quach"
-            android:textSize="@dimen/text_size_normal"/>
-
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="@dimen/size_profile_pic"
+                android:layout_height="@dimen/size_profile_pic"
+                android:id="@+id/ivPicAssignee"
+                android:layout_marginRight="5sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TextViewAssignee"
+                android:text="Tri Quach"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/text_size_normal"/>
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -126,27 +120,28 @@
         android:orientation="horizontal"
         android:layout_marginTop="5sp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Status:"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="88dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/TextViewStatus"
-            android:text="Coding"
-            android:paddingLeft="5sp"
-            android:paddingRight="5sp"
-            android:textSize="@dimen/text_size_normal"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/square_7"/>
+            android:layout_weight="1"
+            android:gravity="left"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TextViewStatus"
+                android:text="Coding"
+                android:paddingLeft="5sp"
+                android:paddingRight="5sp"
+                android:textSize="@dimen/text_size_normal"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/square_7"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -155,27 +150,26 @@
         android:orientation="horizontal"
         android:layout_marginTop="5sp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Epic Link:"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="70dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/TextViewEpicLink"
-            android:text="Epic Name"
-            android:textSize="@dimen/text_size_normal"
-            android:textColor="#FFFFFF"
-            android:paddingLeft="5sp"
-            android:paddingRight="5sp"
-            />
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/TextViewEpicLink"
+                android:text="Epic Name"
+                android:textSize="@dimen/text_size_normal"
+                android:textColor="#FFFFFF"
+                android:paddingLeft="5sp"
+                android:paddingRight="5sp"
+                />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -184,21 +178,16 @@
         android:layout_marginTop="5sp"
         android:id="@+id/layoutBlock">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Blocks :"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="80dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txtBlockIssue"
+            android:layout_weight="1"
             android:textSize="@dimen/text_size_normal"
             />
     </LinearLayout>
@@ -209,21 +198,16 @@
         android:layout_marginTop="5sp"
         android:id="@+id/layoutIsBlockBy">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Is Blocked by :"
+            android:layout_weight="4"
             android:textSize="@dimen/text_size_normal"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_marginLeft="35dp"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:background="@drawable/grey_tag"
-            />
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txtBlockedIssue"
+            android:layout_weight="1"
             android:textSize="@dimen/text_size_normal"
             />
     </LinearLayout>

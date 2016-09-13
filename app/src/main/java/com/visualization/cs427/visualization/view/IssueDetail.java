@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.visualization.cs427.visualization.DAL.TimeLogDAL;
+import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.EpicEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
@@ -26,6 +28,7 @@ public class IssueDetail extends AppCompatActivity {
     private TextView txtDescrition, txtTitle, txtBlockIssue, txtBlockedIssue, txtCtoR, txtRtoT, txtTtoD;
     private IssueEntity issueEntity;
     private LinearLayout layoutBlock, layoutBlockBy;
+    private ImageView ivAssigneePic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,7 @@ public class IssueDetail extends AppCompatActivity {
         txtCtoR = (TextView) findViewById(R.id.txtCtoR);
         txtRtoT = (TextView) findViewById(R.id.txtRtoT);
         txtTtoD = (TextView) findViewById(R.id.txtTtoD);
+        ivAssigneePic = (ImageView) findViewById(R.id.ivPicAssignee);
         Intent intent = getIntent();
         int index = intent.getIntExtra(SprintDetailActivity.ISSUE_POSITION,-1);
         if (index == -1){
@@ -66,7 +70,13 @@ public class IssueDetail extends AppCompatActivity {
             TextViewStotyPoints.setText(issueEntity.getPoint()+"");
         }
         if (issueEntity.getAssignee() != null){
-            TextViewAssignee.setText(issueEntity.getAssignee().getName());
+            ContributorEntity entity = issueEntity.getAssignee();
+            String name = entity.getName();
+            String [] names = name.split(" ");
+            String assigneeName = names[names.length-1].toLowerCase();
+            int id = getResources().getIdentifier(assigneeName+"_pic","drawable", getPackageName());
+            ivAssigneePic.setBackgroundResource(id);
+            TextViewAssignee.setText(name);
         }
         TextViewStatus.setText(issueEntity.getStringStatus());
         if (issueEntity.getEpic() != null){
