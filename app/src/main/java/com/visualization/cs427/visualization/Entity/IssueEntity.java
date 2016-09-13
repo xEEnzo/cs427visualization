@@ -174,12 +174,17 @@ public class IssueEntity extends Entity {
         this.blocked = blocked;
     }
 
-    public boolean isBlocked() {
+    public boolean isBlocked(List<IssueEntity> issueEntities) {
         boolean isBlocked = false;
         for (IssueEntity issue : getBlocker()) {
-            if (issue.getProcessStatus() != IssueEntity.STATUS_DONE) {
-                isBlocked = true;
-                break;
+            for (IssueEntity issueEntity : issueEntities) {
+                if (issue.getId().equals(issueEntity.getId())) {
+                    if (issueEntity.getProcessStatus() != IssueEntity.STATUS_DONE) {
+                        isBlocked = true;
+                        break;
+                    }
+                    break;
+                }
             }
         }
         return isBlocked;
