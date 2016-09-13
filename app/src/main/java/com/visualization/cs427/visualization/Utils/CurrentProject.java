@@ -45,4 +45,23 @@ public class CurrentProject {
     public void setProjectEntity(ProjectEntity projectEntity) {
         this.projectEntity = projectEntity;
     }
+
+    public int getIssueIndex(IssueEntity issueEntity) {
+        for (int i = 0; i < issueEntities.size(); ++i) {
+            if (issueEntity.getId().equals(issueEntities.get(i).getId())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void updateIssue(IssueEntity issueEntity) {
+        for (int i = 0; i < issueEntities.size(); ++i) {
+            IssueEntity entity = issueEntities.get(i);
+            if (entity.getId().equals(issueEntity.getId())) {
+                issueEntities.set(i, issueEntity);
+                return;
+            }
+        }
+    }
 }

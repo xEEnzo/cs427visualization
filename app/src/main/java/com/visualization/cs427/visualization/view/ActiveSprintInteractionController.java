@@ -4,24 +4,32 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.visualization.cs427.visualization.DAL.IssueDAL;
 import com.visualization.cs427.visualization.Entity.ContributorEntity;
 import com.visualization.cs427.visualization.Entity.IssueEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.R;
+import com.visualization.cs427.visualization.Utils.CurrentProject;
+import com.visualization.cs427.visualization.Utils.ErrorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +38,7 @@ import java.util.List;
 /**
  * Created by Toan on 9/7/2016.
  */
-public class ActiveSprintInteractionController implements View.OnLongClickListener, View.OnDragListener, View.OnClickListener {
+public class ActiveSprintInteractionController implements View.OnLongClickListener, View.OnDragListener, View.OnClickListener, View.OnTouchListener {
 
     private Activity activity;
     private List<IssueEntity> issueEntities;
@@ -47,6 +55,8 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
     private List<LinearLayout> layoutIssueLines;
     private String timeSpent;
     private IssueEntity currentIssue;
+    private int xClick;
+    private int yClick;
 
     public ActiveSprintInteractionController(Activity activity, List<IssueEntity> issueEntities, List<ContributorEntity> contributorEntities,
                                              HashMap<ContributorEntity, List<IssueEntity>> lineHashMap, LinearLayout layoutIssue,
@@ -93,7 +103,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             IssueEntity entity = issueEntities.get(i);
             LinearLayout layout = createIssueLayout(entity, ISSUE_INDEX_START + i);
             layoutIssues.add(layout);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, ViewGroup.LayoutParams.MATCH_PARENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutIssue.addView(layout, params);
         }
     }
@@ -115,6 +125,27 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
     public boolean onLongClick(View view) {
         View.DragShadowBuilder builder = new View.DragShadowBuilder(view);
         from = (int) view.getTag();
+        IssueEntity issueEntity = issueEntities.get(from % 100);
+        if (from < LINE_INDEX_START) {
+            if (issueEntity.isBlocked()) {
+                StringBuilder mesBuilder = new StringBuilder();
+                mesBuilder.append("This issue is blocked by ");
+                for (int i = 0; i < issueEntity.getBlocker().size(); ++i) {
+                    if (i != issueEntity.getBlocker().size() - 1) {
+                        mesBuilder.append(issueEntity.getBlocker().get(i).getName() + ", ");
+                    } else {
+                        mesBuilder.append(issueEntity.getBlocker().get(i).getName() + ".");
+                    }
+                }
+                ErrorUtils.showDialog(activity, mesBuilder.toString());
+                return true;
+            }
+        } else {
+            if (issueEntity.getProcessStatus() == IssueEntity.STATUS_TESTING) {
+                ErrorUtils.showDialog(activity, "You can't move a testing ticket");
+                return true;
+            }
+        }
         view.startDrag(null, builder, view, 0);
         return false;
     }
@@ -288,6 +319,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             return;
         }
         entity.setProcessStatus(IssueEntity.STATUS_TODO);
+        CurrentProject.getInstance().updateIssue(entity);
         // update database
         try {
             IssueDAL.getInstance().updateStatus(activity, entity, entity.getAssignee(), "");
@@ -357,6 +389,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             dialogBuilder.create().show();
         } else {
             entity.setProcessStatus(IssueEntity.STATUS_CODING);
+            CurrentProject.getInstance().updateIssue(entity);
             // update database
             try {
                 IssueDAL.getInstance().updateStatus(activity, entity, contributorEntities.get(toIndex), "");
@@ -422,6 +455,34 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         tvName2.setText(issueEntities.get(toIndex).getName());
         LinearLayout layout2 = (LinearLayout) layoutTo.findViewById(R.id.layoutBackground);
         layout2.setBackgroundColor(ContextCompat.getColor(activity, issueEntities.get(toIndex).getColorIDfromType()));
+
+        if (issueEntities.get(fromIndex).isBlocked()) {
+            layoutFrom.findViewById(R.id.ivWarning).setVisibility(View.VISIBLE);
+        } else {
+            layoutFrom.findViewById(R.id.ivWarning).setVisibility(View.INVISIBLE);
+        }
+        if (issueEntities.get(toIndex).isBlocked()) {
+            layoutTo.findViewById(R.id.ivWarning).setVisibility(View.VISIBLE);
+        } else {
+            layoutTo.findViewById(R.id.ivWarning).setVisibility(View.INVISIBLE);
+        }
+
+        TextView tvContributor1 = (TextView) layoutFrom.findViewById(R.id.tvContributorName);
+        if (issueEntities.get(fromIndex).getAssignee() != null) {
+            tvContributor1.setText(issueEntities.get(fromIndex).getAssignee().getName());
+        } else {
+            tvContributor1.setText("(unassigned)");
+        }
+        TextView tvPoint1 = (TextView) layoutFrom.findViewById(R.id.tvIssuePoint);
+        tvPoint1.setText(issueEntities.get(fromIndex).getPoint() + " point(s)");
+        TextView tvContributor2 = (TextView) layoutTo.findViewById(R.id.tvContributorName);
+        if (issueEntities.get(fromIndex).getAssignee() != null) {
+            tvContributor2.setText(issueEntities.get(fromIndex).getAssignee().getName());
+        } else {
+            tvContributor2.setText("(unassigned)");
+        }
+        TextView tvPoint2 = (TextView) layoutTo.findViewById(R.id.tvIssuePoint);
+        tvPoint2.setText(issueEntities.get(fromIndex).getPoint() + " point(s)");
     }
 
     private FrameLayout createIssueLineLayout(IssueEntity entity, int tag) {
@@ -449,6 +510,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         conLayout.setOnDragListener(this);
         conLayout.setTag(tag);
         conLayout.setOnClickListener(this);
+        conLayout.setOnTouchListener(this);
         return conLayout;
     }
 
@@ -459,9 +521,20 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         if (entity.getType() == IssueEntity.TYPE_BUG) {
             tvName.setTextColor(ContextCompat.getColor(activity, R.color.white));
         }
+        TextView tvContributor = (TextView) conLayout.findViewById(R.id.tvContributorName);
+        if (entity.getAssignee() != null) {
+            tvContributor.setText(entity.getAssignee().getName());
+        } else {
+            tvContributor.setText("(unassigned)");
+        }
+        TextView tvPoint = (TextView) conLayout.findViewById(R.id.tvIssuePoint);
+        tvPoint.setText("" + entity.getPoint() + " point(s)");
         // set background based on type
         LinearLayout layout = (LinearLayout) conLayout.findViewById(R.id.layoutBackground);
         layout.setBackgroundColor(ContextCompat.getColor(activity, entity.getColorIDfromType()));
+        if (!entity.isBlocked()) {
+            conLayout.findViewById(R.id.ivWarning).setVisibility(View.INVISIBLE);
+        }
         conLayout.setTag(tag);
         conLayout.setOnLongClickListener(this);
         conLayout.setOnDragListener(this);
@@ -490,6 +563,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
                     entity.setProcessStatus(IssueEntity.STATUS_CODING);
                 }
                 entity.setAssignee(contributorEntities.get(toIndex));
+                CurrentProject.getInstance().updateIssue(entity);
                 // update database
                 try {
                     IssueDAL.getInstance().updateStatus(activity, entity, contributorEntities.get(toIndex), timeSpent);
@@ -534,6 +608,8 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
                 }
                 IssueEntity entity = issueEntities.get(fromIndex);
                 entity.setProcessStatus(IssueEntity.STATUS_CODING);
+                entity.setAssignee(contributorEntities.get(toIndex));
+                CurrentProject.getInstance().updateIssue(entity);
                 // update database
                 try {
                     IssueDAL.getInstance().updateStatus(activity, entity, contributorEntities.get(toIndex), "");
@@ -638,45 +714,125 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         TextView tvUpdate = (TextView) layout.findViewById(R.id.tvUpdate);
         TextView tvSeeDetail = (TextView) layout.findViewById(R.id.tvSeeDetail);
         TextView tvDone = (TextView) layout.findViewById(R.id.tvDone);
-        if (currentIssue.getProcessStatus() == IssueEntity.STATUS_TESTING) {
+        if (currentIssue.getProcessStatus() == IssueEntity.STATUS_DONE) {
+            tvUpdate.setVisibility(View.GONE);
+            tvReassign.setVisibility(View.GONE);
+            tvDone.setVisibility(View.GONE);
+        } else if (currentIssue.getProcessStatus() == IssueEntity.STATUS_TESTING) {
             tvUpdate.setVisibility(View.GONE);
             tvReassign.setVisibility(View.GONE);
         } else {
             tvDone.setVisibility(View.GONE);
         }
         tvReassign.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                contributorDialog(false).show();
-                dialog.dismiss();
-            }
-        });
+                                          @Override
+                                          public void onClick(View view) {
+                                              contributorDialog(false).show();
+                                              dialog.dismiss();
+                                          }
+                                      }
+
+        );
         tvUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                contributorDialog(true).show();
-                dialog.dismiss();
-            }
-        });
+                                        @Override
+                                        public void onClick(View view) {
+                                            contributorDialog(true).show();
+                                            dialog.dismiss();
+                                        }
+                                    }
+
+        );
         tvSeeDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // navigate to Issue detail
+                                           @Override
+                                           public void onClick(View view) {
+                                               // navigate to Issue detail
+                                               Intent intent = new Intent(activity, IssueDetail.class);
+                                               intent.putExtra(SprintDetailActivity.ISSUE_POSITION, CurrentProject.getInstance().getIssueIndex(currentIssue));
+                                               activity.startActivity(intent);
+                                               dialog.dismiss();
+                                           }
+                                       }
 
-                dialog.dismiss();
-            }
-        });
+        );
         tvDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // update to done
+                                      @Override
+                                      public void onClick(View view) {
+                                          // show done dialog
+                                          doneDialog().show();
+                                          dialog.dismiss();
+                                      }
+                                  }
 
-                dialog.dismiss();
-            }
-        });
+        );
         dialog.setContentView(layout);
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        Toast.makeText(activity, "" + xClick + " " + yClick, Toast.LENGTH_SHORT).show();
+        wlp.x = xClick;
+        wlp.y = yClick;
+        window.setAttributes(wlp);
         return dialog;
     }
+
+    private Dialog doneDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+        dialogBuilder.setTitle("Update issue");
+        LinearLayout layout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.dialog_time_spent, null);
+        ((TextView) layout.findViewById(R.id.tvMessage)).setText("Verify issue " + currentIssue.getName() + "?");
+        final EditText edtTime = (EditText) layout.findViewById(R.id.edtTimeSpent);
+        edtTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                timeSpent = edtTime.getText().toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        dialogBuilder.setView(layout);
+        dialogBuilder.setPositiveButton("Yes", doneDialogListener);
+        dialogBuilder.setNegativeButton("No", doneDialogListener);
+        return dialogBuilder.create();
+    }
+
+    private DialogInterface.OnClickListener doneDialogListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (i == DialogInterface.BUTTON_POSITIVE) {
+                try {
+                    // update database
+                    currentIssue.setProcessStatus(IssueEntity.STATUS_DONE);
+                    IssueDAL.getInstance().updateStatus(activity, currentIssue, currentIssue.getAssignee(), timeSpent);
+                    CurrentProject.getInstance().updateIssue(currentIssue);
+                    // update layout
+                    int lineIndex = contributorEntities.indexOf(currentIssue.getAssignee());
+                    int issueIndex = 0;
+                    for (int j = 0; j < lineHashMap.get(currentIssue.getAssignee()).size(); ++j) {
+                        if (currentIssue.getId().equals(lineHashMap.get(currentIssue.getAssignee()).get(j).getId())) {
+                            issueIndex = j;
+                        }
+                    }
+                    LinearLayout layout = (LinearLayout) layoutIssueLines.get(lineIndex).findViewById(R.id.layoutIssueLine);
+                    FrameLayout conLayout = (FrameLayout) layout.getChildAt(issueIndex);
+                    LinearLayout layoutDone = (LinearLayout) conLayout.findViewById(R.id.layoutDone);
+                    layoutDone.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+                    // update issue b/c done
+                    setUpLayoutIssue();
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                dialogInterface.dismiss();
+            }
+        }
+    };
 
     private Dialog contributorDialog(final boolean update) {
         final Dialog dialog = new Dialog(activity);
@@ -719,5 +875,20 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         }
         dialog.setContentView(layout);
         return dialog;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            int height = displaymetrics.heightPixels;
+            int width = displaymetrics.widthPixels;
+            int position[] = new int[2];
+            view.getLocationOnScreen(position);
+            xClick = (int) (position[0] - width/2 + motionEvent.getX() + 120);
+            yClick = (int) (position[1] - height/2 + motionEvent.getY());
+        }
+        return false;
     }
 }

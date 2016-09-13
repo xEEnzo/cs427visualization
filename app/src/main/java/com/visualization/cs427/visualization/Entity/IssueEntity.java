@@ -127,6 +127,7 @@ public class IssueEntity extends Entity {
         }
         return null;
     }
+
     public String getStringType() {
         switch (type){
             case IssueEntity.TYPE_BUG:
@@ -171,5 +172,16 @@ public class IssueEntity extends Entity {
 
     public void setBlocked(List<IssueEntity> blocked) {
         this.blocked = blocked;
+    }
+
+    public boolean isBlocked() {
+        boolean isBlocked = false;
+        for (IssueEntity issue : getBlocker()) {
+            if (issue.getProcessStatus() != IssueEntity.STATUS_DONE) {
+                isBlocked = true;
+                break;
+            }
+        }
+        return isBlocked;
     }
 }

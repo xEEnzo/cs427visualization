@@ -17,6 +17,7 @@ import com.visualization.cs427.visualization.Entity.IssueEntity;
 import com.visualization.cs427.visualization.Entity.ProjectEntity;
 import com.visualization.cs427.visualization.Exception.DatabaseException;
 import com.visualization.cs427.visualization.R;
+import com.visualization.cs427.visualization.Utils.CurrentProject;
 import com.visualization.cs427.visualization.Utils.DataUtils;
 
 import java.util.ArrayList;
@@ -37,28 +38,33 @@ public class ActiveSprintActivity extends AppCompatActivity {
         setContentView(R.layout.activity_active_sprint);
         // get from data
         try {
-            List<ProjectEntity> projectEntities = ProjectDAL.getInstance().getAllProject(this);
-            projectEntity = projectEntities.get(0);
-            List<IssueEntity> issueEntities = IssueDAL.getInstance().getIssuebyProject(this, projectEntity.getId());
-            projectEntity.setIssueEntities((ArrayList<IssueEntity>) issueEntities);
+            projectEntity = CurrentProject.getInstance().getProjectEntity();
+            List<IssueEntity> issueEntitiesAll = IssueDAL.getInstance().getIssuebyProject(this, projectEntity.getId());
+            projectEntity.setIssueEntities((ArrayList<IssueEntity>) issueEntitiesAll);
+            List<IssueEntity> issueEntities = new ArrayList<>();
+            for (IssueEntity issueEntity : issueEntitiesAll) {
+                if (issueEntity.getLocationStatus() == IssueEntity.LOCATION_SPRINT) {
+                    issueEntities.add(issueEntity);
+                }
+            }
             contributorEntities = new ArrayList<>();
-            for (IssueEntity entity : issueEntities) {
+            for (IssueEntity entity : issueEntitiesAll) {
                 addContributorToList(entity.getAssignee(), contributorEntities);
             }
             lineHashMap = new HashMap<>();
             for (ContributorEntity entity : contributorEntities) {
-                List<IssueEntity> issueEntityList = new ArrayList<>();
+                List<IssueEntity> issueEntitiesContributor = new ArrayList<>();
                 List<IssueEntity> removeList = new ArrayList<>();
                 for (int i = 0; i < issueEntities.size(); i++) {
                     IssueEntity issueEntity = issueEntities.get(i);
                     if (issueEntity.getAssignee().getId().equals(entity.getId()) && issueEntity.getProcessStatus() != IssueEntity.STATUS_TODO) {
-                        issueEntityList.add(issueEntity);
+                        issueEntitiesContributor.add(issueEntity);
                         removeList.add(issueEntity);
                     }
                 }
                 issueEntities.removeAll(removeList);
-                issueEntityList = DataUtils.orderIssueByTimeLog(this, issueEntityList);
-                lineHashMap.put(entity, issueEntityList);
+                issueEntitiesContributor = DataUtils.orderIssueByTimeLog(this, issueEntitiesContributor);
+                lineHashMap.put(entity, issueEntitiesContributor);
             }
             layoutIssue = (LinearLayout) findViewById(R.id.layoutIssue);
             layoutContributorPoint = (LinearLayout) findViewById(R.id.layoutContributorPoint);
@@ -71,6 +77,9 @@ public class ActiveSprintActivity extends AppCompatActivity {
     }
 
     private void addContributorToList(ContributorEntity entity, List<ContributorEntity> contributorEntities) {
+        if (entity == null) {
+            return;
+        }
         for (ContributorEntity contributorEntity : contributorEntities) {
             if (contributorEntity.getId().equals(entity.getId())) {
                 return;
@@ -79,4 +88,13 @@ public class ActiveSprintActivity extends AppCompatActivity {
         contributorEntities.add(entity);
     }
 
+    @Override
+    protected void onStop() {
+        try {
+            CurrentProject.getInstance().setIssueEntities(IssueDAL.getInstance().getIssuebyProject(this, CurrentProject.getInstance().getProjectEntity().getId()));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        super.onStop();
+    }
 }
