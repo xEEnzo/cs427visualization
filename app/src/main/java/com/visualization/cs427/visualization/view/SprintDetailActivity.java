@@ -207,6 +207,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void createSprint(){
+        if (layoutSprint.getChildCount() != 0){
+            layoutSprint.removeAllViews();
+        }
         viewListSprint = new ArrayList<>();
         List<IssueEntity> sprintIssues = DataUtils.getIssueInSprint(issueEntities);
         for (int i = 0; i < sprintIssues.size(); ++i) {
@@ -531,7 +534,9 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
         txtTotalPoints.setVisibility(View.VISIBLE);
         int total = 0;
         for (View view : viewListSprint){
-            total +=(int)view.getTag(R.string.issue_point);
+            if (view.getTag(R.string.issue_point) != null) {
+                total += (int) view.getTag(R.string.issue_point);
+            }
         }
         if (total == 1){
             txtTotalPoints.setText(total + " point");
@@ -634,5 +639,12 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
                 createBackLog();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        createBackLog();
+        createSprint();
+        super.onResume();
     }
 }
