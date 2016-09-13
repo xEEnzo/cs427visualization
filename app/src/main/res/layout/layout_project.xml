@@ -11,7 +11,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:id="@+id/txtProjectName"
         android:paddingLeft="20sp"
+        android:gravity="center_vertical"
         android:textSize="@dimen/text_size_normal"/>
 </LinearLayout>

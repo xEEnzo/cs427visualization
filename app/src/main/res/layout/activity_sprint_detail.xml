@@ -76,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:padding="3sp"
                 android:text="Active Sprint"
+                android:textSize="@dimen/text_size_normal"
                 android:layout_gravity="bottom"
                 android:gravity="center"
                 android:visibility="invisible"

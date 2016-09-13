@@ -105,20 +105,29 @@ public class CreateIssueActivity extends AppCompatActivity {
             contributorEntity = contributorEntities.get(spinnerAssignee.getSelectedItemPosition());
         }
         EpicEntity epicEntity = CurrentProject.getInstance().getEpicEntities().get(spinnerEpic.getSelectedItemPosition());
-        IssueEntity link = CurrentProject.getInstance().getIssueEntities().get(spinnerIssue.getSelectedItemPosition()-1);
+        List<IssueEntity> list = new ArrayList<>();
+        if (spinnerIssue.getSelectedItemPosition() !=0) {
+            IssueEntity link = CurrentProject.getInstance().getIssueEntities().get(spinnerIssue.getSelectedItemPosition() - 1);
+            list.add(link);
+        }
         String description = editTextDescription.getText().toString();
         IssueEntity entity = new IssueEntity(null, textSummary, issueType, point, description, IssueEntity.STATUS_TODO, IssueEntity.LOCATION_BACKLOG, contributorEntity, epicEntity);
         int selectedIssueLink = spinnerIssue.getSelectedItemPosition();
         if (selectedIssueLink == 0){
             return entity;
         }
-        List<IssueEntity> list = new ArrayList<>();
-        list.add(link);
+        if (list.isEmpty()){
+            entity.setBlocked(list);
+            entity.setBlocker(list);
+            return entity;
+        }
         if (spinnerLinkedIssue.getSelectedItemPosition() == 0){
             entity.setBlocked(list);
+            entity.setBlocker(new ArrayList<IssueEntity>());
         }
         else{
             entity.setBlocked(list);
+            entity.setBlocked(new ArrayList<IssueEntity>());
         }
         return entity;
     }
@@ -154,12 +163,12 @@ public class CreateIssueActivity extends AppCompatActivity {
         int count = 1;
         List<IssueEntity> issueEntities = CurrentProject.getInstance().getIssueEntities();
         String[] issueNames = new String[issueEntities.size()+1];
-        issueNames[0] = "";
+        issueNames[0] = "(empty)";
         for (IssueEntity issueEntity : issueEntities){
             issueNames[count] = issueEntity.getName();
             ++count;
         }
-        ArrayAdapter<String> adapterIssue = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, issueNames);
+        ArrayAdapter<String> adapterIssue = new ArrayAdapter<String>(this, R.layout.simple_list_item_custom, issueNames);
         spinnerIssue.setAdapter(adapterIssue);
     }
 }

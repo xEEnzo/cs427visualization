@@ -78,6 +78,10 @@ public class IssueDetail extends AppCompatActivity {
             ivAssigneePic.setBackgroundResource(id);
             TextViewAssignee.setText(name);
         }
+        else{
+            ivAssigneePic.setVisibility(View.GONE);
+            TextViewAssignee.setText("Unassigned");
+        }
         TextViewStatus.setText(issueEntity.getStringStatus());
         if (issueEntity.getEpic() != null){
             EpicEntity epicEntity = issueEntity.getEpic();
