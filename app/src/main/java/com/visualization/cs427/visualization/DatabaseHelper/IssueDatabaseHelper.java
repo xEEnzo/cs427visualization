@@ -223,12 +223,6 @@ public class IssueDatabaseHelper extends DatabaseHelper {
             }
             database.insert(TimeLogColumn.TABLE_NAME, null, contentInsert);
             database.setTransactionSuccessful();
-//            String query = "SELECT * FROM " + IssueColumn.TABLE_NAME + " WHERE " + IssueColumn.ISSUE_ID.getColumnName() + " = ?";
-//            Cursor cursor = database.rawQuery(query, new String[]{issueEntity.getId()});
-//            if (!cursor.moveToFirst()) {
-//                throw new DatabaseException();
-//            }
-//            return getEntityFromCursor(cursor);
         } finally {
             database.endTransaction();
         }

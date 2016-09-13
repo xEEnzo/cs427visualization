@@ -40,7 +40,7 @@ public class TimeLogDatabaseHelper extends DatabaseHelper {
     public Timestamp getTimeAssigned(IssueEntity issueEntity, int status) throws DatabaseException {
         String query = "SELECT * FROM " + TimeLogColumn.TABLE_NAME + " WHERE " + TimeLogColumn.ISSUE_ID.getColumnName() + " = ? and "
                 + TimeLogColumn.STATUS + " = ?";
-        Cursor cursor = database.rawQuery(query, new String[]{issueEntity.getId(), "" + status});
+        Cursor cursor = database.rawQuery(query, new String[]{issueEntity.getId(), "" + (status)});
         if (!cursor.moveToFirst()) {
             throw new DatabaseException();
         }

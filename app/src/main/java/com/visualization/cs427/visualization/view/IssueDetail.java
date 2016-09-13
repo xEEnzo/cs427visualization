@@ -124,7 +124,7 @@ public class IssueDetail extends AppCompatActivity {
         int processStatus = issueEntity.getProcessStatus();
         for (int i=1; i<=processStatus;++i){
             try {
-                String timeSpent = TimeLogDAL.getInstance().getTimeSpent(this, issueEntity, i);
+                String timeSpent = TimeLogDAL.getInstance().getTimeSpent(this, issueEntity, i+1);
                 switch (i){
                     case 1:
                         txtCtoR.setText(timeSpent);
