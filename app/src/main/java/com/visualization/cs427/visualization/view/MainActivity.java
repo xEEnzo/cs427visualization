@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.visualization.cs427.visualization.R;
+import com.visualization.cs427.visualization.Utils.ErrorUtils;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,9 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void CreateButton(View view)
     {
-        CreateButton = (Button) findViewById(R.id.create);
-        Intent intent = new Intent(this, ActiveSprintActivity.class);
-        startActivity(intent);
+        ErrorUtils.showDialog(this, "This function is under development");
     }
     public void OpenButton(View view)
     {

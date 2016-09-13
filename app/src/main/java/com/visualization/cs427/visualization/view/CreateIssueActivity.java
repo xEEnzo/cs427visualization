@@ -102,7 +102,7 @@ public class CreateIssueActivity extends AppCompatActivity {
         int point = Integer.parseInt(editTextStoryPoints.getText().toString());
         ContributorEntity contributorEntity = null;
         if (spinnerAssignee.getSelectedItemPosition() !=0) {
-            contributorEntity = contributorEntities.get(spinnerAssignee.getSelectedItemPosition());
+            contributorEntity = contributorEntities.get(spinnerAssignee.getSelectedItemPosition() - 1);
         }
         EpicEntity epicEntity = CurrentProject.getInstance().getEpicEntities().get(spinnerEpic.getSelectedItemPosition());
         List<IssueEntity> list = new ArrayList<>();
