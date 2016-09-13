@@ -57,8 +57,9 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
     private IssueEntity currentIssue;
     private int xClick;
     private int yClick;
+    private TextView tvBacklog;
 
-    public ActiveSprintInteractionController(Activity activity, List<IssueEntity> issueEntities, List<ContributorEntity> contributorEntities,
+    public ActiveSprintInteractionController(final Activity activity, List<IssueEntity> issueEntities, List<ContributorEntity> contributorEntities,
                                              HashMap<ContributorEntity, List<IssueEntity>> lineHashMap, LinearLayout layoutIssue,
                                              LinearLayout layoutContributorPoint, LinearLayout layoutContributorLine) {
         this.activity = activity;
@@ -73,6 +74,13 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         setUpLayoutContributorPoint();
         setUpLayoutIssue();
         setUpLayoutIssueLine();
+        tvBacklog = (TextView) activity.findViewById(R.id.tvBacklog);
+        tvBacklog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.finish();
+            }
+        });
     }
 
     private void setUpLayoutIssueLine() {
@@ -99,6 +107,8 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
     }
 
     private void setUpLayoutIssue() {
+        layoutIssues.clear();
+        layoutIssue.removeAllViews();
         for (int i = 0; i < issueEntities.size(); ++i) {
             IssueEntity entity = issueEntities.get(i);
             LinearLayout layout = createIssueLayout(entity, ISSUE_INDEX_START + i);
@@ -125,9 +135,9 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
     public boolean onLongClick(View view) {
         View.DragShadowBuilder builder = new View.DragShadowBuilder(view);
         from = (int) view.getTag();
-        IssueEntity issueEntity = issueEntities.get(from % 100);
         if (from < LINE_INDEX_START) {
-            if (issueEntity.isBlocked()) {
+            IssueEntity issueEntity = issueEntities.get(from % 100);
+            if (issueEntity.isBlocked(CurrentProject.getInstance().getIssueEntities())) {
                 StringBuilder mesBuilder = new StringBuilder();
                 mesBuilder.append("This issue is blocked by ");
                 for (int i = 0; i < issueEntity.getBlocker().size(); ++i) {
@@ -141,8 +151,15 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
                 return true;
             }
         } else {
+            int lineIndex = from / 100 % 100;
+            int issueIndex = from % 100;
+            IssueEntity issueEntity = lineHashMap.get(contributorEntities.get(lineIndex)).get(issueIndex);
             if (issueEntity.getProcessStatus() == IssueEntity.STATUS_TESTING) {
-                ErrorUtils.showDialog(activity, "You can't move a testing ticket");
+                ErrorUtils.showDialog(activity, "You can't move testing ticket. If you want to re-assign, tap the ticket and choose the option.");
+                return true;
+            }
+            if (issueEntity.getProcessStatus() == IssueEntity.STATUS_DONE) {
+                ErrorUtils.showDialog(activity, "You can't move done ticket.");
                 return true;
             }
         }
@@ -189,9 +206,13 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
                     // add dummy blank layout
                     int index = to % 100;
                     LinearLayout dummyLayout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.item_issue, null);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, ViewGroup.LayoutParams.MATCH_PARENT);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, ViewGroup.LayoutParams.MATCH_PARENT);
                     TextView tvName = (TextView) dummyLayout.findViewById(R.id.tvIssueName);
-                    tvName.setText("");
+                    tvName.setVisibility(View.INVISIBLE);
+                    TextView tvContributor = (TextView) dummyLayout.findViewById(R.id.tvContributorName);
+                    tvContributor.setVisibility(View.INVISIBLE);
+                    TextView tvPoint = (TextView) dummyLayout.findViewById(R.id.tvIssuePoint);
+                    tvPoint.setVisibility(View.INVISIBLE);
                     dummyLayout.setTag(DUMMY_INDEX);
                     dummyLayout.setOnDragListener(this);
                     layoutIssue.addView(dummyLayout, index, params);
@@ -338,7 +359,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             layoutIssue.removeView(removeView);
         }
         // move entity to backlog
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, ViewGroup.LayoutParams.MATCH_PARENT);
         LinearLayout moveIssue = createIssueLayout(entity, ISSUE_INDEX_START + toIndex);
         layoutIssue.addView(moveIssue, toIndex, params);
         layoutIssues.add(toIndex, moveIssue);
@@ -351,7 +372,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         layout.removeViewAt(issueLineIndex);
         // remove entity on line
         lineHashMap.get(contributorEntities.get(fromIndex)).remove(issueLineIndex);
-        // add enity on backlog
+        // add entity on backlog
         issueEntities.add(toIndex, entity);
         // update tag on line
         for (int i = issueLineIndex; i < lineHashMap.get(contributorEntities.get(fromIndex)).size(); i++) {
@@ -456,12 +477,12 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         LinearLayout layout2 = (LinearLayout) layoutTo.findViewById(R.id.layoutBackground);
         layout2.setBackgroundColor(ContextCompat.getColor(activity, issueEntities.get(toIndex).getColorIDfromType()));
 
-        if (issueEntities.get(fromIndex).isBlocked()) {
+        if (issueEntities.get(fromIndex).isBlocked(CurrentProject.getInstance().getIssueEntities())) {
             layoutFrom.findViewById(R.id.ivWarning).setVisibility(View.VISIBLE);
         } else {
             layoutFrom.findViewById(R.id.ivWarning).setVisibility(View.INVISIBLE);
         }
-        if (issueEntities.get(toIndex).isBlocked()) {
+        if (issueEntities.get(toIndex).isBlocked(CurrentProject.getInstance().getIssueEntities())) {
             layoutTo.findViewById(R.id.ivWarning).setVisibility(View.VISIBLE);
         } else {
             layoutTo.findViewById(R.id.ivWarning).setVisibility(View.INVISIBLE);
@@ -475,14 +496,15 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         }
         TextView tvPoint1 = (TextView) layoutFrom.findViewById(R.id.tvIssuePoint);
         tvPoint1.setText(issueEntities.get(fromIndex).getPoint() + " point(s)");
+
         TextView tvContributor2 = (TextView) layoutTo.findViewById(R.id.tvContributorName);
         if (issueEntities.get(fromIndex).getAssignee() != null) {
-            tvContributor2.setText(issueEntities.get(fromIndex).getAssignee().getName());
+            tvContributor2.setText(issueEntities.get(toIndex).getAssignee().getName());
         } else {
             tvContributor2.setText("(unassigned)");
         }
         TextView tvPoint2 = (TextView) layoutTo.findViewById(R.id.tvIssuePoint);
-        tvPoint2.setText(issueEntities.get(fromIndex).getPoint() + " point(s)");
+        tvPoint2.setText(issueEntities.get(toIndex).getPoint() + " point(s)");
     }
 
     private FrameLayout createIssueLineLayout(IssueEntity entity, int tag) {
@@ -518,9 +540,9 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         LinearLayout conLayout = (LinearLayout) activity.getLayoutInflater().inflate(R.layout.item_issue, null);
         TextView tvName = (TextView) conLayout.findViewById(R.id.tvIssueName);
         tvName.setText(entity.getName());
-        if (entity.getType() == IssueEntity.TYPE_BUG) {
-            tvName.setTextColor(ContextCompat.getColor(activity, R.color.white));
-        }
+//        if (entity.getType() == IssueEntity.TYPE_BUG) {
+//            tvName.setTextColor(ContextCompat.getColor(activity, R.color.white));
+//        }
         TextView tvContributor = (TextView) conLayout.findViewById(R.id.tvContributorName);
         if (entity.getAssignee() != null) {
             tvContributor.setText(entity.getAssignee().getName());
@@ -532,7 +554,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         // set background based on type
         LinearLayout layout = (LinearLayout) conLayout.findViewById(R.id.layoutBackground);
         layout.setBackgroundColor(ContextCompat.getColor(activity, entity.getColorIDfromType()));
-        if (!entity.isBlocked()) {
+        if (!entity.isBlocked(CurrentProject.getInstance().getIssueEntities())) {
             conLayout.findViewById(R.id.ivWarning).setVisibility(View.INVISIBLE);
         }
         conLayout.setTag(tag);
@@ -632,6 +654,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
                 for (int j = fromIndex; j < layoutIssues.size(); ++j) {
                     layoutIssues.get(j).setTag((int) layoutIssues.get(j).getTag() - 1);
                 }
+                updatePoint();
             } else {
                 dialogInterface.dismiss();
             }
@@ -767,7 +790,6 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
         dialog.setContentView(layout);
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        Toast.makeText(activity, "" + xClick + " " + yClick, Toast.LENGTH_SHORT).show();
         wlp.x = xClick;
         wlp.y = yClick;
         window.setAttributes(wlp);
@@ -886,8 +908,8 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             int width = displaymetrics.widthPixels;
             int position[] = new int[2];
             view.getLocationOnScreen(position);
-            xClick = (int) (position[0] - width/2 + motionEvent.getX() + 120);
-            yClick = (int) (position[1] - height/2 + motionEvent.getY());
+            xClick = (int) (position[0] - width / 2 + motionEvent.getX() + 120);
+            yClick = (int) (position[1] - height / 2 + motionEvent.getY());
         }
         return false;
     }
