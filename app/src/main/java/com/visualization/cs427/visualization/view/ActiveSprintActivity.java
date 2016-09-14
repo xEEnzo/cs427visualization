@@ -57,7 +57,7 @@ public class ActiveSprintActivity extends AppCompatActivity {
                 List<IssueEntity> removeList = new ArrayList<>();
                 for (int i = 0; i < issueEntities.size(); i++) {
                     IssueEntity issueEntity = issueEntities.get(i);
-                    if (issueEntity.getAssignee().getId().equals(entity.getId()) && issueEntity.getProcessStatus() != IssueEntity.STATUS_TODO) {
+                    if (issueEntity.getAssignee() != null && issueEntity.getAssignee().getId().equals(entity.getId()) && issueEntity.getProcessStatus() != IssueEntity.STATUS_TODO) {
                         issueEntitiesContributor.add(issueEntity);
                         removeList.add(issueEntity);
                     }

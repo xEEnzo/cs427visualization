@@ -189,7 +189,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void createBackLog() {
-        if (layoutBacklog.getChildCount() != 0){
+        if (viewListBacklog != null && !viewListBacklog.isEmpty()){
             layoutBacklog.removeAllViews();
         }
         viewListBacklog = new ArrayList<>();
@@ -207,7 +207,7 @@ public class SprintDetailActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void createSprint(){
-        if (layoutSprint.getChildCount() != 0){
+        if (viewListSprint!= null && !viewListSprint.isEmpty()){
             layoutSprint.removeAllViews();
         }
         viewListSprint = new ArrayList<>();

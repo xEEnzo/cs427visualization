@@ -410,6 +410,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             dialogBuilder.create().show();
         } else {
             entity.setProcessStatus(IssueEntity.STATUS_CODING);
+            entity.setAssignee(contributorEntities.get(toIndex));
             CurrentProject.getInstance().updateIssue(entity);
             // update database
             try {
@@ -690,7 +691,7 @@ public class ActiveSprintInteractionController implements View.OnLongClickListen
             int sum = 0;
             for (IssueEntity entity : issueEntities) {
                 if ((entity.getProcessStatus() == IssueEntity.STATUS_TODO || entity.getProcessStatus() == IssueEntity.STATUS_CODING)
-                        && entity.getAssignee().getId().equals(contributorEntities.get(i).getId()))
+                        && entity.getAssignee() != null && entity.getAssignee().getId().equals(contributorEntities.get(i).getId()))
                     sum += entity.getPoint();
             }
             for (IssueEntity entity : lineHashMap.get(contributorEntities.get(i))) {
